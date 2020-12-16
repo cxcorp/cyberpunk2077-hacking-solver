@@ -1,0 +1,71 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins/_breakpoints";
+
+@font-face {
+  font-family: "Rajdhani Mod";
+  font-weight: 600;
+  src: //url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
+       //url('webfont.woff') format('woff'), /* Pretty Modern Browsers */
+    url("/fonts/Rajdhani Mod SemiBold.ttf") format("truetype"); /* Safari, Android, iOS */
+  //url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+@font-face {
+  font-family: "Rajdhani Mod";
+  font-weight: 500;
+  src: //url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
+       //url('webfont.woff') format('woff'), /* Pretty Modern Browsers */
+    url("/fonts/Rajdhani Mod Medium.ttf") format("truetype"); /* Safari, Android, iOS */
+  //url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+$color-highlight: #d0ed57;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  color: #fff;
+  background: rgb(25, 17, 25);
+  background: linear-gradient(
+    176deg,
+    rgba(25, 17, 25, 1) 0%,
+    rgba(13, 15, 17, 1) 100%
+  );
+
+  font-family: "Rajdhani", "Roboto", -apple-system, BlinkMacSystemFont, Segoe UI,
+    Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+    sans-serif;
+  font-weight: 400;
+
+  font-size: 13px;
+  @include media-breakpoint-up(md) {
+    font-size: 14px;
+  }
+  @include media-breakpoint-up(lg) {
+    font-size: 16px;
+  }
+
+  //position: relative;
+  /*font-family: "Roboto", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;*/
+}
+
+#__next {
+  position: relative;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #5ee9f2;
+}
+
+* {
+  box-sizing: border-box;
+}

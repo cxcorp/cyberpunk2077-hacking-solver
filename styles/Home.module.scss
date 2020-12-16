@@ -1,0 +1,381 @@
+@use "sass:color";
+@import "./common";
+
+.title {
+  margin-left: -3px;
+  margin-bottom: 3rem;
+}
+
+.description {
+  line-height: 1.5;
+  font-size: 1.5rem;
+  color: $color-highlight;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.description-separator {
+  height: 0.5rem;
+  background: $color-highlight;
+  width: 100%;
+  margin-bottom: 4rem;
+  box-shadow: 20px 14px 28px rgba(208, 237, 87, 0.25),
+    -20px 14px 28px rgba(208, 237, 87, 0.25),
+    0 10px 10px rgba(208, 237, 87, 0.22), 0 0 40px 5px rgb(22, 90, 13);
+}
+
+.main {
+  padding: 9vh 1rem;
+}
+
+.hackbox {
+  border: 1px solid $color-highlight;
+  background: transparent;
+  margin-bottom: 2rem;
+
+  &__header {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 5rem;
+    height: 42px;
+    background: $color-highlight;
+    color: $color-bg;
+    position: relative;
+  }
+
+  &__sequence {
+    position: absolute;
+    left: 0;
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 2rem;
+    width: 4rem;
+    height: 4rem;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: $color-highlight;
+    border: 2px solid $color-highlight;
+    background: #151017;
+    box-shadow: 0 0 30px rgba(22, 90, 13, 0.3), 0 0 6px rgba(22, 90, 13, 0.5);
+    text-shadow: 0 0 10px rgba(208, 237, 87, 0.5);
+  }
+
+  &__sequence::before {
+    content: "";
+    position: absolute;
+    left: 28px;
+    right: 0;
+    top: 12px;
+    bottom: 0;
+    filter: blur(10px);
+
+    box-shadow: inset 0 0 30px rgba(22, 90, 13, 0.5),
+      inset 0 0 6px rgba(22, 90, 13, 0.7),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.7);
+  }
+
+  @include media-breakpoint-down(xs) {
+    &__sequence {
+      display: none;
+    }
+    &__header {
+      padding-left: 2rem;
+    }
+  }
+
+  &__header p {
+    margin: 0;
+    padding: 0;
+  }
+
+  &__inside {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+.hackbox-textbox {
+  @include code-font;
+  flex: 1 1 auto;
+  height: 25rem;
+
+  border-radius: 3px;
+  border: 1px solid color.adjust($color-lighter-bg, $alpha: -0.3);
+  background: transparent;
+  padding: 1rem 10%;
+  color: $color-highlight;
+
+  font-size: 1.4rem;
+  line-height: 1.7em;
+  word-spacing: 0.4rem;
+
+  @include media-breakpoint-up(sm) {
+    font-size: 1.5rem;
+    line-height: 1.8em;
+    word-spacing: 0.7rem;
+  }
+
+  @include media-breakpoint-up(md) {
+    font-size: 1.6rem;
+    line-height: 1.9em;
+    word-spacing: 0.8rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    font-size: 1.7rem;
+    line-height: 2em;
+    word-spacing: 0.9rem;
+  }
+
+  @include media-breakpoint-up(xl) {
+    font-size: 1.8rem;
+    line-height: 2.1em;
+    word-spacing: 1rem;
+  }
+
+  text-transform: uppercase;
+}
+
+.sequence-box {
+  border: 1px solid $color-highlight;
+  background: transparent;
+  min-height: 12rem;
+  margin-bottom: 2rem;
+
+  &__header {
+    font-weight: 400;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 2rem;
+    height: 42px;
+    border-bottom: 1px solid $color-highlight;
+    //background: $color-highlight;
+    color: $color-highlight;
+    position: relative;
+  }
+
+  &__header p {
+    margin: 0;
+    padding: 0;
+  }
+
+  &__sequence {
+    position: absolute;
+    right: 0;
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 2rem;
+    width: 4rem;
+    height: 4rem;
+    transform: translateX(50%);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: $color-highlight;
+    border: 2px solid $color-highlight;
+    background: #151017;
+    box-shadow: 0 0 30px rgba(22, 90, 13, 0.3), 0 0 6px rgba(22, 90, 13, 0.5);
+    text-shadow: 0 0 10px rgba(208, 237, 87, 0.5);
+  }
+
+  &__sequence::before {
+    content: "";
+    position: absolute;
+    left: -30px;
+    right: 10px;
+    top: 12px;
+    bottom: 0;
+    filter: blur(10px);
+
+    box-shadow: inset 0 0 30px rgba(22, 90, 13, 0.2),
+      inset 0 0 6px rgba(22, 90, 13, 0.3),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.3);
+  }
+
+  @include media-breakpoint-down(xs) {
+    &__sequence {
+      display: none;
+    }
+  }
+
+  &__inside {
+    //padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+.sequences-selector {
+  @include code-font;
+  flex: 1 1 auto;
+  height: 25rem;
+
+  border-radius: 3px;
+  border: 1px solid color.adjust($color-lighter-bg, $alpha: -0.3);
+  background: transparent;
+  color: $color-highlight;
+
+  padding: 1rem 10%;
+
+  @include media-breakpoint-up(lg) {
+    padding: 1rem 2rem;
+  }
+
+  text-transform: uppercase;
+
+  font-size: 1.4rem;
+  line-height: 1.7em;
+  word-spacing: 0.4rem;
+
+  @include media-breakpoint-up(sm) {
+    font-size: 1.5rem;
+    line-height: 1.8em;
+    word-spacing: 0.7rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    font-size: 1.6rem;
+    line-height: 1.9em;
+    word-spacing: 0.8rem;
+  }
+}
+
+.hack-button {
+  &__button {
+    background: transparent;
+    border: 2px solid $color-highlight;
+    color: $color-highlight;
+    font-size: 1.5rem;
+    padding: 0.8rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__button::after {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    content: "> > >";
+    clip-path: inset(0 100% 0 0);
+    animation: none;
+  }
+
+  &__button:hover::after {
+    clip-path: inset(0 100% 0 0);
+    animation: button-arrows;
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
+    animation-direction: forwards;
+    animation-iteration-count: infinite;
+  }
+
+  &__button:hover::before {
+    opacity: 1;
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-duration: 3s;
+    animation-timing-function: ease-in-out;
+    animation-name: button-swishy-swoshy;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+  }
+
+  &__button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+    bottom: -50%;
+    filter: blur(10px);
+
+    transition: opacity 200ms cubic-bezier(0.4, 0, 1, 1);
+    opacity: 0.2;
+
+    animation: none;
+    box-shadow: inset 0 0 30px rgba(22, 90, 13, 0.5),
+      inset 0 0 6px rgba(22, 90, 13, 0.7),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.7);
+  }
+}
+
+@keyframes button-arrows {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  24% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  25% {
+    clip-path: inset(0 66% 0 0);
+  }
+
+  49% {
+    clip-path: inset(0 66% 0 0);
+  }
+
+  50% {
+    clip-path: inset(0 33% 0 0);
+  }
+
+  74% {
+    clip-path: inset(0 33% 0 0);
+  }
+
+  75% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes button-swishy-swoshy {
+  0% {
+    transform: translate(0, 0) rotate(0);
+    box-shadow: inset 0 0 30px rgba(22, 90, 13, 0.5),
+      inset 0 0 6px rgba(22, 90, 13, 0.7),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.7);
+  }
+
+  20% {
+    transform: translate(0, -30px);
+    box-shadow: inset -30px 5px 30px rgba(22, 90, 13, 0.5),
+      inset 10px -5px 6px rgba(22, 90, 13, 0.7),
+      inset 10px 20px 30px rgba(208, 237, 87, 0.7);
+  }
+
+  50% {
+    transform: rotate(10deg);
+    box-shadow: inset 0 5px 30px rgba(22, 90, 13, 0.5),
+      inset 0 -5px 6px rgba(22, 90, 13, 0.7),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.7);
+  }
+
+  100% {
+    transform: translate(0, 30px) rotate(-5deg);
+    box-shadow: inset 10px 5px 30px rgba(22, 90, 13, 0.5),
+      inset -10px -5px 6px rgba(22, 90, 13, 0.7),
+      inset 10px 20px 30px rgba(208, 237, 87, 0.7);
+  }
+}

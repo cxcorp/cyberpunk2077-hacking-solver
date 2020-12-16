@@ -1,0 +1,28 @@
+@import "./common";
+
+.title {
+  margin-left: -3px;
+  margin-bottom: 3rem;
+  line-height: 1.15;
+  color: $color-highlight;
+
+  font-size: 3rem;
+
+  @include media-breakpoint-up(sm) {
+    font-size: 4rem;
+  }
+}
+
+.title a {
+  color: $color-highlight;
+  text-decoration: none;
+}
+
+.title a:hover {
+  text-decoration: none;
+}
+
+.title a:focus,
+.title a:active {
+  text-decoration: underline;
+}

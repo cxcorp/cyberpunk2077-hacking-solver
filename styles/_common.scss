@@ -1,0 +1,12 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins/_breakpoints";
+
+$color-highlight: #d0ed57;
+$color-bg: #121018;
+$color-lighter-bg: #292c3a;
+
+@mixin code-font {
+  font-family: "Rajdhani Mod", Meno, Consolas, monospace;
+  font-weight: 500;
+}
