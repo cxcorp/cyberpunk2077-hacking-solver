@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.5.3",
+    "classnames": "^2.2.6",
     "lodash-es": "^4.17.15",
     "next": "10.0.3",
     "react": "17.0.1",
@@ -17,6 +18,7 @@
     "sass": "^1.30.0"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.11",
     "@types/lodash-es": "^4.17.4",
     "@types/node": "^14.14.14",
     "@types/react": "^17.0.0",

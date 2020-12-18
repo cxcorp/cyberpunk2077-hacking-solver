@@ -1,57 +1,17 @@
 import Head from "next/head";
-import React, {
-  useState,
-  useContext,
-  useMemo,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import { Container, Row, Col } from "react-bootstrap";
+
+import {
+  AppContext,
+  AppContextType,
+  useAppContext,
+} from "../components/AppContext";
 import Layout from "../components/Layout";
+import FilteredTextArea from "../components/FilteredTextArea";
+import BufferSizeBox from "../components/BufferSizeBox";
 import MainTitle from "../components/MainTitle";
 import styles from "../styles/Home.module.scss";
-
-interface AppState {
-  matrixText: string;
-  sequencesText: string;
-}
-interface AppCallbacks {
-  onMatrixChanged: (str: string) => void;
-  onSequencesChanged: (str: string) => void;
-}
-interface AppContextType extends AppState, AppCallbacks {}
-
-const noOp = () => {};
-const AppContext = React.createContext<AppContextType>({
-  matrixText: "",
-  sequencesText: "",
-  onMatrixChanged: noOp,
-  onSequencesChanged: noOp,
-});
-
-const useAppContext = () => useContext(AppContext);
-
-interface FilteredTextAreaProps extends React.HTMLProps<HTMLTextAreaElement> {
-  regex: RegExp;
-}
-
-function FilteredTextArea(props: FilteredTextAreaProps) {
-  const { regex, ...textAreaProps } = props;
-
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const newValue = e.currentTarget.value;
-      if (!regex.test(newValue)) {
-        return;
-      }
-      props.onChange && props.onChange(e);
-    },
-    [regex, props.onChange]
-  );
-
-  console.log(textAreaProps)
-  return <textarea {...textAreaProps} onChange={handleChange} />;
-}
 
 const placeholder = `7A 55 E9 E9 1C 55
 55 7A 1C 7A E9 55
@@ -87,7 +47,7 @@ function HackBox() {
   return (
     <div className={styles.hackbox}>
       <div className={styles.hackbox__header}>
-        <div className={styles.hackbox__sequence}>1</div>
+        <div className={styles.hackbox__sequence}>2</div>
         <p>ENTER CODE MATRIX</p>
       </div>
       <div className={styles.hackbox__inside}>
@@ -125,7 +85,7 @@ function SequenceBox() {
   return (
     <div className={styles["sequence-box"]}>
       <div className={styles["sequence-box__header"]}>
-        <div className={styles["sequence-box__sequence"]}>2</div>
+        <div className={styles["sequence-box__sequence"]}>3</div>
         <p>ENTER SEQUENCES</p>
       </div>
       <div className={styles["sequence-box__inside"]}>
@@ -153,7 +113,7 @@ function HackButton({ onClick }: { onClick: () => void }) {
   return (
     <div className={styles["hack-button"]}>
       <button onClick={handleClick} className={styles["hack-button__button"]}>
-        CRACK
+        SOLVE
       </button>
     </div>
   );
@@ -162,16 +122,31 @@ function HackButton({ onClick }: { onClick: () => void }) {
 export default function Home() {
   const [matrixText, onMatrixChanged] = useState<string>("");
   const [sequencesText, onSequencesChanged] = useState<string>("");
+  const [bufferSize, onBufferSizeChanged] = useState<number>(4);
 
   const state = useMemo<AppContextType>(
-    () => ({ matrixText, onMatrixChanged, sequencesText, onSequencesChanged }),
-    [matrixText, onMatrixChanged, sequencesText, onSequencesChanged]
+    () => ({
+      matrixText,
+      onMatrixChanged,
+      sequencesText,
+      onSequencesChanged,
+      bufferSize,
+      onBufferSizeChanged,
+    }),
+    [
+      matrixText,
+      onMatrixChanged,
+      sequencesText,
+      onSequencesChanged,
+      bufferSize,
+      onBufferSizeChanged,
+    ]
   );
   const stateRef = useRef(state);
   stateRef.current = state;
 
   const handleHackButtonClick = useCallback(async () => {
-    const { matrixText, sequencesText } = stateRef.current;
+    const { matrixText, sequencesText, bufferSize } = stateRef.current;
     console.log("start");
 
     const runSolver = (await import("../lib/bruter")).default;
@@ -179,7 +154,7 @@ export default function Home() {
     const matrix = parseMatrix(matrixText);
     const sequences = parseMatrix(sequencesText);
     console.log(matrix, sequences);
-    const solutions = runSolver(matrix, sequences, 8);
+    const solutions = runSolver(matrix, sequences, bufferSize);
     console.log(solutions);
   }, [stateRef]);
 
@@ -195,7 +170,7 @@ export default function Home() {
             <Col>
               <MainTitle className={styles.title} />
               <p className={styles.description}>
-                STOP GUESSING AND START BREACHING, SAMURAI
+                INSTANT BREACH PROTOCOL SOLVER - START CRACKING, SAMURAI
               </p>
             </Col>
           </Row>
@@ -203,6 +178,12 @@ export default function Home() {
           <Row>
             <Col lg={8}>
               <div className={styles["description-separator"]}></div>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col lg={8}>
+              <BufferSizeBox />
             </Col>
           </Row>
 

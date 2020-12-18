@@ -1,0 +1,114 @@
+@use 'sass:color';
+@import "../styles/common";
+
+.box {
+  border: 2px solid $color-highlight;
+  background: color.adjust($color-lighter-bg, $alpha: -0.7);
+  margin-bottom: 2rem;
+
+  &__header {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 5rem;
+    height: 42px;
+    background: $color-highlight;
+    color: $color-bg;
+    position: relative;
+  }
+
+  &__sequence {
+    position: absolute;
+    left: 0;
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 2rem;
+    width: 4rem;
+    height: 4rem;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: $color-highlight;
+    border: 2px solid $color-highlight;
+    background: #151017;
+    box-shadow: 0 0 30px rgba(22, 90, 13, 0.3), 0 0 6px rgba(22, 90, 13, 0.5);
+    text-shadow: 0 0 10px rgba(208, 237, 87, 0.5);
+  }
+
+  &__sequence::before {
+    content: "";
+    position: absolute;
+    left: 28px;
+    right: 0;
+    top: 12px;
+    bottom: 0;
+    filter: blur(10px);
+
+    box-shadow: inset 0 0 30px rgba(22, 90, 13, 0.5),
+      inset 0 0 6px rgba(22, 90, 13, 0.7),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.7);
+  }
+
+  @include media-breakpoint-down(xs) {
+    &__sequence {
+      display: none;
+    }
+    &__header {
+      padding-left: 2rem;
+    }
+  }
+
+  &__header p {
+    margin: 0;
+    padding: 0;
+  }
+
+  &__inside {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    padding: 2rem 10%;
+  }
+
+  &__input {
+    background: $color-bg;
+    color: $color-highlight;
+    border: 1px solid $color-highlight;
+    padding: 0.5em 2em;
+    cursor: pointer;
+
+    font-size: 1.4rem;
+
+    flex: 1 1 auto;
+    text-align: center;
+    text-align-last: center;
+
+    @include media-breakpoint-up(sm) {
+      font-size: 1.5rem;
+    }
+
+    @include media-breakpoint-up(md) {
+      font-size: 1.6rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      font-size: 1.7rem;
+      padding: 0.5rem 1.5em;
+    }
+  }
+}
+
+.buffer {
+  &__item {
+    display: inline-block;
+    margin-right: 0.7rem;
+    height: 2.2rem;
+    width: 2.2rem;
+    border: 2px dashed rgba(120, 120, 120, 0.7);
+  }
+}

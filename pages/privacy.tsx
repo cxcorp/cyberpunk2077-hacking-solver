@@ -34,7 +34,7 @@ const PrivacyPage = () => {
                 <hr />
                 <p>
                   <Link href="/">
-                    <a>{"< "}Back to the tool</a>
+                    <a className={styles.backlink}>{"< "}Back to the tool</a>
                   </Link>
                 </p>
               </div>

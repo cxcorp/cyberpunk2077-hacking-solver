@@ -1,3 +1,5 @@
+@import "./common";
+
 .main {
   padding: 9vh 1rem;
 }
@@ -8,4 +10,8 @@
 
 .content a {
   text-decoration: underline;
+}
+
+.backlink {
+  color: $color-highlight;
 }
