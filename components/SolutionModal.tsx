@@ -52,7 +52,24 @@ const renderSolution = (
     }
   }
 
-  
+  ctx.strokeStyle = "#5ee9f2";
+
+  for (const { x, y } of solution) {
+    ctx.strokeRect(x * square * 2, y * square * 2 + square, square, square);
+  }
+  for (let i = 0; i < solution.length - 1; i++) {
+    const curr = solution[i];
+    const next = solution[i + 1];
+    ctx.moveTo(
+      curr.x * square * 2 + square / 2,
+      curr.y * square * 2 + square * 1.5
+    );
+    ctx.lineTo(
+      next.x * square * 2 + square / 2,
+      next.y * square * 2 + square * 1.5
+    );
+    ctx.stroke();
+  }
 
   console.log();
 };
