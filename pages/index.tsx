@@ -11,7 +11,9 @@ import Layout from "../components/Layout";
 import FilteredTextArea from "../components/FilteredTextArea";
 import BufferSizeBox from "../components/BufferSizeBox";
 import MainTitle from "../components/MainTitle";
+import SolutionModal from "../components/SolutionModal";
 import styles from "../styles/Home.module.scss";
+import { SolverResult } from "../lib/bruter";
 
 const placeholder = `7A 55 E9 E9 1C 55
 55 7A 1C 7A E9 55
@@ -106,13 +108,23 @@ const parseMatrix = (str: string): number[][] =>
         .map((n) => parseInt(n, 16))
     );
 
-function HackButton({ onClick }: { onClick: () => void }) {
+function HackButton({
+  disabled,
+  onClick,
+}: {
+  disabled?: boolean;
+  onClick: () => void;
+}) {
   const handleClick = useCallback(() => {
     onClick();
   }, [onClick]);
   return (
     <div className={styles["hack-button"]}>
-      <button onClick={handleClick} className={styles["hack-button__button"]}>
+      <button
+        disabled={disabled}
+        onClick={handleClick}
+        className={styles["hack-button__button"]}
+      >
         SOLVE
       </button>
     </div>
@@ -145,18 +157,48 @@ export default function Home() {
   const stateRef = useRef(state);
   stateRef.current = state;
 
+  const inputsEmpty = useMemo(
+    () => sequencesText.trim().length === 0 && matrixText.trim().length === 0,
+    [sequencesText, matrixText]
+  );
+  const [solverRunning, setSolverRunning] = useState<boolean>(false);
+  const [codeMatrix, setCodeMatrix] = useState<number[][]>([]);
+  const [allSequencesLen, setAllSequencesLen] = useState<number>(0);
+  const [solution, setSolution] = useState<SolverResult | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
   const handleHackButtonClick = useCallback(async () => {
     const { matrixText, sequencesText, bufferSize } = stateRef.current;
     console.log("start");
+    setSolverRunning(true);
 
-    const runSolver = (await import("../lib/bruter")).default;
-    console.log("running");
-    const matrix = parseMatrix(matrixText);
-    const sequences = parseMatrix(sequencesText);
-    console.log(matrix, sequences);
-    const solutions = runSolver(matrix, sequences, bufferSize);
-    console.log(solutions);
-  }, [stateRef]);
+    setTimeout(async () => {
+      const runSolver = (await import("../lib/bruter")).default;
+      console.log("running");
+      const matrix = parseMatrix(matrixText);
+      const sequences = parseMatrix(sequencesText);
+      console.log(matrix, sequences);
+      const solution = runSolver(matrix, sequences, bufferSize);
+      console.log(solution);
+
+      setSolution(solution);
+      setAllSequencesLen(sequences.length);
+      setCodeMatrix(matrix);
+      setModalVisible(true);
+      setSolverRunning(false);
+    }, 50);
+  }, [
+    stateRef,
+    setSolution,
+    setAllSequencesLen,
+    setModalVisible,
+    setSolverRunning,
+    setCodeMatrix,
+  ]);
+
+  const onModalHide = useCallback(() => setModalVisible(false), [
+    setModalVisible,
+  ]);
 
   return (
     <AppContext.Provider value={state}>
@@ -164,6 +206,14 @@ export default function Home() {
         <Head>
           <title>Optimal Cyberpunk 2077 Hacker Tool</title>
         </Head>
+
+        <SolutionModal
+          show={modalVisible}
+          onHide={onModalHide}
+          result={solution}
+          allSequencesLen={allSequencesLen}
+          codeMatrix={codeMatrix}
+        />
 
         <Container as="main" className={styles.main}>
           <Row>
@@ -198,7 +248,10 @@ export default function Home() {
 
           <Row>
             <Col lg={8}>
-              <HackButton onClick={handleHackButtonClick} />
+              <HackButton
+                disabled={solverRunning || inputsEmpty}
+                onClick={handleHackButtonClick}
+              />
             </Col>
           </Row>
         </Container>

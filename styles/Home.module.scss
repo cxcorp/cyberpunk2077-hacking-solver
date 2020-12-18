@@ -279,6 +279,10 @@
     overflow: hidden;
   }
 
+  &__button:disabled {
+    opacity: 0.5;
+  }
+
   &__button::after {
     display: none;
     position: absolute;
@@ -290,7 +294,7 @@
     animation: none;
   }
 
-  &__button:hover::after {
+  &__button:not(:disabled):hover::after {
     display: inline;
     clip-path: inset(0 100% 0 0);
     animation: button-arrows;
@@ -301,7 +305,7 @@
     animation-iteration-count: infinite;
   }
 
-  &__button:hover::before {
+  &__button:not(:disabled):hover::before {
     opacity: 1;
     animation-play-state: running;
     animation-fill-mode: forwards;

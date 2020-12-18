@@ -2,6 +2,7 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins/_breakpoints";
+@import "./common";
 
 @font-face {
   font-family: "Rajdhani Mod";
@@ -68,4 +69,26 @@ a:hover {
 
 * {
   box-sizing: border-box;
+}
+
+.modal {
+  &-content {
+    background-color: $color-bg;
+    color: $color-highlight;
+    border: 2px solid $color-highlight;
+    border-radius: 0;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+  }
+
+  &-header {
+    border-radius: 0;
+    background: $color-highlight;
+    color: $color-bg;
+    border-bottom: none;
+  }
+
+  &-footer {
+    border-top: 1px solid $color-highlight;
+  }
 }
