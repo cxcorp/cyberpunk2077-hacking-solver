@@ -1,8 +1,9 @@
-import { FC, useCallback } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { Coord, SolverResult } from "../lib/bruter";
 import styles from "../styles/SolutionModal.module.scss";
+import React from "react";
 
 interface Props {
   className?: string;
@@ -19,11 +20,56 @@ const Sb: FC = ({ children }) => {
 
 interface SolutionRendererProps {
   codeMatrix: number[][];
-  solution: Coord[][];
+  solution: Coord[];
 }
 
+const fmtRow = (row: number[]) =>
+  row.map((n) => n.toString(16).toUpperCase()).join("  ");
+
+const renderSolution = (
+  parent: HTMLElement,
+  canvas: HTMLCanvasElement,
+  codeMatrix: number[][],
+  solution: Coord[]
+) => {
+  const parentWidth = parent.clientWidth;
+  canvas.height = parentWidth;
+  canvas.height = parentWidth;
+  const ctx = canvas.getContext("2d");
+  ctx.font = '500 16px "Rajdhani Mod", Meno, Consolas, monospace';
+  ctx.fillStyle = "#d0ed57";
+
+  const byteSize = ctx.measureText(codeMatrix[0][0].toString(16).toUpperCase());
+  const square = byteSize.width;
+
+  for (let y = 0; y < codeMatrix.length; y++) {
+    for (let x = 0; x < codeMatrix[0].length; x++) {
+      ctx.fillText(
+        codeMatrix[y][x].toString(16).toUpperCase(),
+        x * square * 2,
+        y * square * 2
+      );
+    }
+  }
+
+  
+
+  console.log();
+};
+
 const SolutionRenderer = ({ codeMatrix, solution }: SolutionRendererProps) => {
-  return <div className={styles.renderer}>solution</div>;
+  const parentRef = React.createRef<HTMLDivElement>();
+  const canvasRef = React.createRef<HTMLCanvasElement>();
+
+  useEffect(() => {
+    renderSolution(parentRef.current, canvasRef.current, codeMatrix, solution);
+  }, [codeMatrix, solution]);
+
+  return (
+    <div className={styles.renderer} ref={parentRef}>
+      <canvas ref={canvasRef}></canvas>
+    </div>
+  );
 };
 
 interface BodyProps {
@@ -38,7 +84,6 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
   }
 
   const { match, solution } = result;
-  console.log(match);
   const { includes, result: optimalSequence } = match;
   return (
     <>
