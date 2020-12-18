@@ -99,12 +99,14 @@ function applyShift(
   let result: number[] = [];
   if (shift.dir === ShiftDir.Right) {
     const output = [...target];
+    output.length = target.length + shiftee.length - shift.shift;
     for (let i = 0; i < shiftee.length; i++) {
       output[i + shift.shift] = shiftee[i];
     }
     result = output;
   } else {
     const output = [...shiftee];
+    output.length = shiftee.length + target.length - shift.shift;
     for (let i = 0; i < target.length; i++) {
       output[i + shift.shift] = target[i];
     }
