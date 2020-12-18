@@ -50,10 +50,12 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
               or no solution exists.
             </Sb>
           </p>
-          <p>
-            <Sb>
-              Matched {includes.length}/{allSequencesLen} sequences:
-            </Sb>
+          <div>
+            <p className="mb-0">
+              <Sb>
+                Matched {includes.length}/{allSequencesLen} sequences:
+              </Sb>
+            </p>
             <ul>
               {includes.map((inc) => {
                 const str = inc
@@ -62,7 +64,7 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
                 return <li key={str}>{str}</li>;
               })}
             </ul>
-          </p>
+          </div>
         </>
       )}
       <p>
