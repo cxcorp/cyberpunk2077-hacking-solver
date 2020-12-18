@@ -1,5 +1,5 @@
 import { maxBy } from "lodash-es";
-import optimizeSequences from "./sequence-optimizer";
+import optimizeSequences, { MatchResult } from "./sequence-optimizer";
 import { getRootsAllValues } from "./tree";
 
 export interface Coord {
@@ -21,11 +21,17 @@ export interface SearchPoint {
   y: number;
 }
 
+export interface SolverResult {
+  routeLength: number;
+  match: MatchResult;
+  solution: Coord[];
+}
+
 export default function runSolver(
   matrix: number[][],
   sequences: number[][],
   bufferSize: number
-) {
+): SolverResult | null {
   const roots = optimizeSequences(sequences);
   const values = getRootsAllValues(roots);
 
@@ -75,7 +81,7 @@ function brute(
   pattern: readonly number[],
   matrix: readonly number[][],
   findAll: boolean = false
-) {
+): Coord[][] {
   const yLen = matrix.length;
   const xLen = matrix[0].length;
 
