@@ -110,6 +110,7 @@ function brute(
     },
   ];
 
+  let isInitial = true;
   const solutions: Coord[][] = [];
 
   while (queue.length > 0) {
@@ -136,8 +137,20 @@ function brute(
           x,
           y,
         });
+      } else if (isInitial) {
+        queue.push({
+          patternPtr: patternPtr,
+          used: markUsed(used, x, y),
+          stepsSoFar: stepsSoFar.concat({ x, y }),
+          allowedDir:
+            allowedDir === Dir.Vertical ? Dir.Horizontal : Dir.Vertical,
+          x,
+          y,
+        });
       }
     }
+
+    isInitial = false;
   }
 
   return solutions;
