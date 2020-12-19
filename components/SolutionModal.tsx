@@ -165,7 +165,17 @@ interface BodyProps {
 
 const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
   if (result === null) {
-    return <p>No solutions were discovered.</p>;
+    return (
+      <>
+        <p className={styles.note}>
+          <Sb>No solutions were discovered.</Sb>
+        </p>
+        <p className={styles.note}>
+          Buffer size may be too small. Note that the solver currently allows
+          only one wasted digit; at the first digit.
+        </p>
+      </>
+    );
   }
 
   const { match, solution } = result;
@@ -177,8 +187,10 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
           <p className={styles.note}>
             <Sb>
               Not all sequences could be included - either buffer is too small
-              or no solution exists.
-            </Sb>
+              or no solution exists which includes all sequences.
+            </Sb>{" "}
+            Note that the solver currently allows only one wasted digit; at the
+            first digit.
           </p>
           <div>
             <p className="mb-0">
