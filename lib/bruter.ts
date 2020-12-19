@@ -21,9 +21,14 @@ export interface SearchPoint {
   y: number;
 }
 
+export interface OptimizedSequence {
+  result: number[];
+  includes: number[][];
+}
+
 export interface SolverResult {
   routeLength: number;
-  match: MatchResult;
+  match: OptimizedSequence;
   solution: Coord[];
 }
 
@@ -33,7 +38,15 @@ export default function runSolver(
   bufferSize: number
 ): SolverResult | null {
   const roots = optimizeSequences(sequences);
-  const values = getRootsAllValues(roots);
+  const values: OptimizedSequence[] = [
+    // add original sequences individually since sequence optimizer
+    // only returns combinations
+    ...sequences.map((sequence) => ({
+      result: sequence,
+      includes: [sequence],
+    })),
+    ...getRootsAllValues(roots),
+  ];
 
   const doableValues = values.filter((r) => r.result.length <= bufferSize);
 
@@ -41,9 +54,9 @@ export default function runSolver(
     .length;
 
   for (let includeCount = maxIncludes!; includeCount > 0; includeCount--) {
-    const matches = doableValues
-      .filter((r) => r.includes.length === includeCount)
-      .sort((a, b) => a.result.length - b.result.length);
+    const matches = doableValues.filter(
+      (r) => r.includes.length === includeCount
+    );
 
     const solutionsByDistance = matches
       .flatMap((match) => {
