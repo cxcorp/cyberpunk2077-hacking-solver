@@ -7,18 +7,26 @@
 @font-face {
   font-family: "Rajdhani Mod";
   font-weight: 600;
-  src: //url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
-       //url('webfont.woff') format('woff'), /* Pretty Modern Browsers */
-    url("/fonts/Rajdhani Mod SemiBold.ttf") format("truetype"); /* Safari, Android, iOS */
+  src:
+    // Super Modern Browsers
+    url("/fonts/rajdhani_mod_semibold.woff2") format("woff2"),
+    // Pretty Modern Browsers
+    url("/fonts/rajdhani_mod_semibold.woff") format("woff"),
+    // Safari, Android, iOS
+    url("/fonts/Rajdhani Mod SemiBold.ttf") format("truetype");
   //url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
 }
 
 @font-face {
   font-family: "Rajdhani Mod";
   font-weight: 500;
-  src: //url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
-       //url('webfont.woff') format('woff'), /* Pretty Modern Browsers */
-    url("/fonts/Rajdhani Mod Medium.ttf") format("truetype"); /* Safari, Android, iOS */
+  src:
+      // Super Modern Browsers
+    url("/fonts/rajdhani_mod_medium.woff2") format("woff2"),
+    // Pretty Modern Browsers
+    url("/fonts/rajdhani_mod_medium.woff") format("woff"),
+    // Safari, Android, iOS
+    url("/fonts/Rajdhani Mod Medium.ttf") format("truetype");
   //url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
 }
 
