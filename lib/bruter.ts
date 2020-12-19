@@ -48,7 +48,7 @@ export default function runSolver(
     const solutionsByDistance = matches
       .flatMap((match) => {
         const pattern = match.result;
-        const solutions = brute(pattern, matrix);
+        const solutions = brute(pattern, matrix, true);
         return solutions.map((solution) => ({ match, solution }));
       })
       .map((s) => ({ ...s, routeLength: solutionRouteLength(s.solution) }))
