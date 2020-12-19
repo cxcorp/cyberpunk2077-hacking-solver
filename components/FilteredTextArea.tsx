@@ -11,7 +11,7 @@ export default function FilteredTextArea(props: FilteredTextAreaProps) {
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = e.currentTarget.value;
-      if (!regex.test(newValue)) {
+      if (newValue.length > 0 && !regex.test(newValue)) {
         return;
       }
       props.onChange && props.onChange(e);
