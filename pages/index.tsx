@@ -205,6 +205,24 @@ export default function Home() {
       <Layout>
         <Head>
           <title>Optimal Cyberpunk 2077 Hacker Tool</title>
+          <meta
+            property="og:title"
+            content="Optimal Cyberpunk 2077 Hacker Tool"
+          />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://cyberpunk-hacker.com" />
+          <meta
+            property="og:description"
+            content="Instant free solver for the Cyberpunk 2077 Breach Protocol hacking minigame."
+          />
+          <meta
+            name="description"
+            content="Instant free solver for the Cyberpunk 2077 Breach Protocol hacking minigame."
+          />
+          <meta
+            property="article:published_time"
+            content="2020-12-19T01:08:20+00:00"
+          />
         </Head>
 
         <SolutionModal
