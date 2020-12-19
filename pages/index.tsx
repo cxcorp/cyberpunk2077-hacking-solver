@@ -250,7 +250,7 @@ export default function Home() {
             <Col>
               <MainTitle className={styles.title} />
               <p className={styles.description}>
-                INSTANT BREACH PROTOCOL SOLVER - START CRACKING, SAMURAI
+                INSTANT BREACH PROTOCOL SOLVER - START CRACKING, SAMURAI.
               </p>
             </Col>
           </Row>
@@ -292,6 +292,15 @@ export default function Home() {
                 disabled={solverRunning || inputsEmpty}
                 onClick={handleHackButtonClick}
               />
+            </Col>
+          </Row>
+
+          <Row className="mt-5">
+            <Col lg={8}>
+              <p>
+                THIS APP IS NOT AFFILIATED WITH CD PROJEKT RED OR CYBERPUNK
+                2077. TRADEMARK "CYBERPUNK 2077" IS OWNED BY CD PROJEKT S.A.
+              </p>
             </Col>
           </Row>
         </Container>
