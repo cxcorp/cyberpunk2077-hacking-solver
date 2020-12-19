@@ -87,11 +87,7 @@ const renderSolution = (
   ctx.textAlign = "center";
   ctx.font =
     "500 1rem -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif";
-  ctx.fillText(
-    "▼",
-    solution[0].x * square * 2 + paddingX + square / 2,
-    0
-  );
+  ctx.fillText("▼", solution[0].x * square * 2 + paddingX + square / 2, 0);
 
   for (const { x, y } of solution) {
     ctx.strokeRect(
