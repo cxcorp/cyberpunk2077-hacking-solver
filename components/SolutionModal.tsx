@@ -232,7 +232,7 @@ export default function SolutionModal({
   codeMatrix,
 }: Props) {
   return (
-    <Modal show={show} onHide={onHide} size="lg" backdrop="static">
+    <Modal show={show} onHide={onHide} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>SOLUTION</Modal.Title>
       </Modal.Header>
