@@ -13,8 +13,9 @@
     // Pretty Modern Browsers
     url("/fonts/rajdhani_mod_semibold.woff") format("woff"),
     // Safari, Android, iOS
-    url("/fonts/Rajdhani Mod SemiBold.ttf") format("truetype");
-  //url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
+    url("/fonts/Rajdhani Mod SemiBold.ttf") format("truetype"),
+    // Legacy iOS
+    url("/fonts/rajdhani_mod_semibold.svg#rajdhani_modsemibold") format("svg");
 }
 
 @font-face {
@@ -26,8 +27,9 @@
     // Pretty Modern Browsers
     url("/fonts/rajdhani_mod_medium.woff") format("woff"),
     // Safari, Android, iOS
-    url("/fonts/Rajdhani Mod Medium.ttf") format("truetype");
-  //url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
+    url("/fonts/Rajdhani Mod Medium.ttf") format("truetype"),
+    // Legacy iOS
+    url("/fonts/rajdhani_mod_medium.svg#rajdhani_modmedium") format("svg");
 }
 
 $color-highlight: #d0ed57;
