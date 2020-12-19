@@ -225,11 +225,11 @@ export default function Home() {
           <meta property="og:url" content="https://cyberpunk-hacker.com" />
           <meta
             property="og:description"
-            content="Instant free solver for the Cyberpunk 2077 Breach Protocol hacking minigame."
+            content="Instant solver for the Cyberpunk 2077 Breach Protocol hacking minigame."
           />
           <meta
             name="description"
-            content="Instant free solver for the Cyberpunk 2077 Breach Protocol hacking minigame."
+            content="Instant solver for the Cyberpunk 2077 Breach Protocol hacking minigame."
           />
           <meta
             property="article:published_time"
