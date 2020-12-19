@@ -1,5 +1,11 @@
 import Head from "next/head";
-import React, { useState, useMemo, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 import {
@@ -62,6 +68,7 @@ function HackBox() {
 const sequencesPlaceholder = `BD E9 1C
 BD 7A BD
 BD 1C BD 55`;
+
 function SequencesSelector() {
   const { sequencesText, onSequencesChanged } = useAppContext();
 
@@ -200,6 +207,11 @@ export default function Home() {
     setModalVisible,
   ]);
 
+  const [hasJS, setHasJS] = useState(false);
+  useEffect(() => {
+    setHasJS(true);
+  }, []);
+
   return (
     <AppContext.Provider value={state}>
       <Layout>
@@ -248,6 +260,16 @@ export default function Home() {
               <div className={styles["description-separator"]}></div>
             </Col>
           </Row>
+
+          {!hasJS && (
+            <noscript style={{ fontSize: "3rem", color: "red" }}>
+              <Row>
+                <Col lg={12}>
+                  This application currently requires JavaScript to run.
+                </Col>
+              </Row>
+            </noscript>
+          )}
 
           <Row>
             <Col lg={8}>
