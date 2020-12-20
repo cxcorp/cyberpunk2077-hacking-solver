@@ -216,20 +216,20 @@ export default function Home() {
     <AppContext.Provider value={state}>
       <Layout>
         <Head>
-          <title>Optimal Cyberpunk 2077 Hacker Tool</title>
+          <title>Cyberpunk 2077 Hacking Minigame Solver</title>
           <meta
             property="og:title"
-            content="Optimal Cyberpunk 2077 Hacker Tool"
+            content="Cyberpunk 2077 Hacking Minigame Solver"
           />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://cyberpunk-hacker.com" />
           <meta
             property="og:description"
-            content="Instant solver for the Cyberpunk 2077 Breach Protocol hacking minigame."
+            content="Cyberpunk 2077 Breach Protocol hacking minigame solver."
           />
           <meta
             name="description"
-            content="Instant solver for the Cyberpunk 2077 Breach Protocol hacking minigame."
+            content="Cyberpunk 2077 Breach Protocol hacking minigame solver."
           />
           <meta
             property="article:published_time"
