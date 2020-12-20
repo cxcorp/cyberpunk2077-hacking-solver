@@ -9,7 +9,7 @@ const PrivacyPage = () => {
   return (
     <>
       <Head>
-        <title>Privacy Policy | Optimal Cyberpunk 2077 Hacker Tool</title>
+        <title>Privacy Policy | Cyberpunk 2077 Hacking Minigame Solver</title>
       </Head>
       <Layout>
         <Container as="main" className={styles.main}>
