@@ -114,9 +114,19 @@ const renderSolution = (
 
     ctx.beginPath();
     const x1 = curr.x * square * 2 + square / 2 + offsetX + paddingX;
-    const y1 = curr.y * square * 2 + square / 2 + offsetY + paddingY - squareInternalPad / 2;
+    const y1 =
+      curr.y * square * 2 +
+      square / 2 +
+      offsetY +
+      paddingY -
+      squareInternalPad / 2;
     const x2 = next.x * square * 2 + square / 2 - offsetX + paddingX;
-    const y2 = next.y * square * 2 + square / 2 - offsetY + paddingY - squareInternalPad / 2;
+    const y2 =
+      next.y * square * 2 +
+      square / 2 -
+      offsetY +
+      paddingY -
+      squareInternalPad / 2;
 
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
