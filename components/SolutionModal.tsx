@@ -38,13 +38,17 @@ const renderSolution = (
   ctx.fillStyle = "#d0ed57";
   ctx.textBaseline = "top";
 
+  let squareInternalPad = 3;
   let fontSize = 1.4;
   if (window.innerWidth >= 1200) {
     fontSize = 1.8;
+    squareInternalPad = 6;
   } else if (window.innerWidth >= 992) {
     fontSize = 1.7;
+    squareInternalPad = 5;
   } else if (window.innerWidth >= 768) {
     fontSize = 1.6;
+    squareInternalPad = 4;
   } else if (window.innerWidth > 576) {
     fontSize = 1.5;
   }
@@ -82,7 +86,7 @@ const renderSolution = (
   ctx.strokeStyle = "#5ee9f2";
   ctx.lineWidth = 3;
 
-  const squareInternalPad = 6;
+  //const squareInternalPad = 6;
   ctx.textBaseline = "top";
   ctx.textAlign = "center";
   ctx.font =
@@ -92,11 +96,13 @@ const renderSolution = (
   for (const { x, y } of solution) {
     ctx.strokeRect(
       x * square * 2 + paddingX - squareInternalPad,
-      y * square * 2 + paddingY - 3 - squareInternalPad,
+      y * square * 2 + paddingY - squareInternalPad / 2 - squareInternalPad,
       square + squareInternalPad * 2,
       square + squareInternalPad * 2
     );
   }
+
+  ctx.lineWidth = 5;
 
   for (let i = 0; i < solution.length - 1; i++) {
     const curr = solution[i];
@@ -117,9 +123,9 @@ const renderSolution = (
 
     ctx.beginPath();
     const x1 = curr.x * square * 2 + square / 2 + offsetX + paddingX;
-    const y1 = curr.y * square * 2 + square / 2 + offsetY + paddingY - 3;
+    const y1 = curr.y * square * 2 + square / 2 + offsetY + paddingY - squareInternalPad / 2;
     const x2 = next.x * square * 2 + square / 2 - offsetX + paddingX;
-    const y2 = next.y * square * 2 + square / 2 - offsetY + paddingY - 3;
+    const y2 = next.y * square * 2 + square / 2 - offsetY + paddingY - squareInternalPad / 2;
 
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
