@@ -5,15 +5,6 @@ import { debounce } from "lodash-es";
 import { Coord, SolverResult } from "../lib/bruter";
 import styles from "../styles/SolutionModal.module.scss";
 
-interface Props {
-  className?: string;
-  onHide: () => void;
-  show: boolean;
-  result: SolverResult | null;
-  allSequencesLen: number;
-  codeMatrix: number[][];
-}
-
 const Sb: FC = ({ children }) => {
   return <span className={styles.semibold}>{children}</span>;
 };
@@ -230,6 +221,15 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
   );
 };
 
+interface SolutionModalProps {
+  className?: string;
+  onHide: () => void;
+  show: boolean;
+  result: SolverResult | null;
+  allSequencesLen: number;
+  codeMatrix: number[][];
+}
+
 export default function SolutionModal({
   className,
   result,
@@ -237,7 +237,7 @@ export default function SolutionModal({
   onHide,
   allSequencesLen,
   codeMatrix,
-}: Props) {
+}: SolutionModalProps) {
   return (
     <Modal show={show} onHide={onHide} size="lg">
       <Modal.Header closeButton>
