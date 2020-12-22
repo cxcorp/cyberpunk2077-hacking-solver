@@ -27,9 +27,30 @@ export interface OptimizedSequence {
 }
 
 export interface SolverResult {
-  routeLength: number;
+  routeWeight: {
+    distance: number;
+    intersectCoeff: number;
+  };
   match: OptimizedSequence;
   solution: Coord[];
+}
+
+function removeDuplicates(arr: OptimizedSequence[]) {
+  const keys = new Set<string>();
+  return arr.filter((seq) => {
+    const key =
+      seq.result.join(",") +
+      "_" +
+      seq.includes
+        .map((incl) => incl.join(","))
+        .sort((a, b) => a.localeCompare(b))
+        .join("-");
+    if (keys.has(key)) {
+      return false;
+    }
+    keys.add(key);
+    return true;
+  });
 }
 
 export default function runSolver(
@@ -48,13 +69,16 @@ export default function runSolver(
     ...getRootsAllValues(roots),
   ];
 
-  const doableValues = values.filter((r) => r.result.length <= bufferSize);
+  const seqsThatFitInBuffer = values.filter(
+    (r) => r.result.length <= bufferSize
+  );
+  const dedupedSeqs = removeDuplicates(seqsThatFitInBuffer);
 
-  const maxIncludes = maxBy(doableValues, (r) => r.includes.length)?.includes
+  const maxIncludes = maxBy(dedupedSeqs, (r) => r.includes.length)?.includes
     .length;
 
   for (let includeCount = maxIncludes!; includeCount > 0; includeCount--) {
-    const matches = doableValues.filter(
+    const matches = dedupedSeqs.filter(
       (r) => r.includes.length === includeCount
     );
 
