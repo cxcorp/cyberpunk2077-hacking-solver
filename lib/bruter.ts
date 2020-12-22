@@ -98,9 +98,11 @@ export default function runSolver(
         return solutions.map((solution) => ({ match, solution }));
       })
       .map((s) => ({ ...s, routeWeight: calculateRouteWeight(s.solution) }))
-      .sort((a, b) => {
-        const aScore = a.routeWeight.distance + a.routeWeight.intersectCoeff;
-        const bScore = b.routeWeight.distance + b.routeWeight.intersectCoeff;
+      .sort(({ routeWeight: a }, { routeWeight: b }) => {
+        const aScore =
+          a.distance + (a.intersectCoeff > 0 ? 2 + a.intersectCoeff : 0);
+        const bScore =
+          b.distance + (b.intersectCoeff > 0 ? 2 + b.intersectCoeff : 0);
         return aScore - bScore;
       });
 
