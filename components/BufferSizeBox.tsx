@@ -35,7 +35,7 @@ export default function BufferSizeBox({ className }: Props) {
     <div className={cz(styles.box, className)}>
       <div className={styles.box__header}>
         <div className={styles.box__sequence}>1</div>
-        SPECIFY BUFFER SIZE
+        <h3 className={styles.box__header_text}>SPECIFY BUFFER SIZE</h3>
       </div>
       <div className={styles.box__inside}>
         <select

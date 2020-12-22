@@ -91,9 +91,10 @@
     }
   }
 
-  &__header p {
+  &__header_text {
     margin: 0;
     padding: 0;
+    font-size: 1.5rem;
   }
 
   &__inside {
@@ -163,9 +164,10 @@
     position: relative;
   }
 
-  &__header p {
+  &__header-text {
     margin: 0;
     padding: 0;
+    font-size: 1.5rem;
   }
 
   &__sequence {

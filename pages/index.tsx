@@ -56,7 +56,7 @@ function HackBox() {
     <div className={styles.hackbox}>
       <div className={styles.hackbox__header}>
         <div className={styles.hackbox__sequence}>2</div>
-        <p>ENTER CODE MATRIX</p>
+        <h3 className={styles.hackbox__header_text}>ENTER CODE MATRIX</h3>
       </div>
       <div className={styles.hackbox__inside}>
         <HackBoxTextBox />
@@ -95,7 +95,7 @@ function SequenceBox() {
     <div className={styles["sequence-box"]}>
       <div className={styles["sequence-box__header"]}>
         <div className={styles["sequence-box__sequence"]}>3</div>
-        <p>ENTER SEQUENCES</p>
+        <h3 className={styles["sequence-box__header-text"]}>ENTER SEQUENCES</h3>
       </div>
       <div className={styles["sequence-box__inside"]}>
         <SequencesSelector />
