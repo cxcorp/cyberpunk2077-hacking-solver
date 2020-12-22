@@ -7,11 +7,6 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <link rel="icon" href="/favicon.ico" />
 
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500&family=Roboto&display=swap"
-          rel="stylesheet"
-        />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://cyberpunk-hacker.com" />
         <meta
