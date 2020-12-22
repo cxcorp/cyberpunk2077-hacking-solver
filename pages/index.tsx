@@ -235,9 +235,9 @@ export default function Home() {
           <Row>
             <Col>
               <MainTitle className={styles.title} />
-              <p className={styles.description}>
-                INSTANT BREACH PROTOCOL SOLVER - START CRACKING, SAMURAI.
-              </p>
+              <h2 className={styles.description}>
+                Instant Breach Protocol solver - start cracking, samurai.
+              </h2>
             </Col>
           </Row>
 
