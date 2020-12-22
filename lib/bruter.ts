@@ -138,6 +138,7 @@ function brute(
           y,
         });
       } else if (isInitial) {
+        // allow one wasted step if it's the first row
         queue.push({
           patternPtr: patternPtr,
           used: markUsed(used, x, y),
