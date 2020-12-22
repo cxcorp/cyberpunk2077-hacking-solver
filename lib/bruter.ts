@@ -1,5 +1,5 @@
 import { maxBy } from "lodash-es";
-import optimizeSequences, { MatchResult } from "./sequence-optimizer";
+import optimizeSequences from "./sequence-optimizer";
 import { getRootsAllValues } from "./tree";
 
 export interface Coord {
@@ -88,8 +88,12 @@ export default function runSolver(
         const solutions = brute(pattern, matrix, true);
         return solutions.map((solution) => ({ match, solution }));
       })
-      .map((s) => ({ ...s, routeLength: solutionRouteLength(s.solution) }))
-      .sort((a, b) => a.routeLength - b.routeLength);
+      .map((s) => ({ ...s, routeWeight: calculateRouteWeight(s.solution) }))
+      .sort((a, b) => {
+        const aScore = a.routeWeight.distance + a.routeWeight.intersectCoeff;
+        const bScore = b.routeWeight.distance + b.routeWeight.intersectCoeff;
+        return aScore - bScore;
+      });
 
     if (solutionsByDistance.length < 1) {
       continue;
@@ -102,7 +106,23 @@ export default function runSolver(
   return null;
 }
 
-function solutionRouteLength(route: Coord[]) {
+interface LineSegment {
+  X1: number;
+  Y1: number;
+  X2: number;
+  Y2: number;
+}
+
+function lineSegment(from: Coord, to: Coord) {
+  return {
+    X1: from.x,
+    Y1: from.y,
+    X2: to.x,
+    Y2: to.y,
+  };
+}
+
+function calculateRouteWeight(route: Coord[]) {
   let dist: number = 0;
   for (let i = 0; i < route.length - 1; i++) {
     // d = sqrt((x2-x1)^2 + (y2-y1)^2)
@@ -111,7 +131,149 @@ function solutionRouteLength(route: Coord[]) {
       route[i + 1].y - route[i].y
     );
   }
-  return dist;
+
+  const overlaps = countSegmentOverlaps(route);
+  return { distance: dist, intersectCoeff: overlaps };
+}
+
+function countSegmentOverlaps(route: Coord[]) {
+  const segments: LineSegment[] = [];
+  for (let i = 0; i < route.length - 1; i++) {
+    segments.push(lineSegment(route[i], route[i + 1]));
+  }
+
+  const checkedCombos = new Set<string>();
+  const segToKey = (seg: LineSegment) =>
+    [seg.X1, seg.X2, seg.Y1, seg.Y2].join(",");
+  const pairToKey = (seg1: LineSegment, seg2: LineSegment) =>
+    [seg1, seg2]
+      .map(segToKey)
+      .sort((a, b) => a.localeCompare(b))
+      .join("-");
+
+  let overlaps = 0;
+  for (let currSegI = 0; currSegI < segments.length; currSegI++) {
+    const currSeg = segments[currSegI];
+
+    for (let otherSegI = 0; otherSegI < segments.length; otherSegI++) {
+      const otherSeg = segments[otherSegI];
+      if (
+        currSegI === otherSegI ||
+        otherSegI === currSegI + 1 ||
+        currSegI === otherSegI + 1
+      ) {
+        continue;
+      }
+
+      const combokey = pairToKey(currSeg, otherSeg);
+      if (checkedCombos.has(combokey)) {
+        continue;
+      }
+      checkedCombos.add(combokey);
+
+      const [currY1, currY2] = [
+        Math.min(currSeg.Y1, currSeg.Y2),
+        Math.max(currSeg.Y1, currSeg.Y2),
+      ];
+      const [otherY1, otherY2] = [
+        Math.min(otherSeg.Y1, otherSeg.Y2),
+        Math.max(otherSeg.Y1, otherSeg.Y2),
+      ];
+      const [currX1, currX2] = [
+        Math.min(currSeg.X1, currSeg.X2),
+        Math.max(currSeg.X1, currSeg.X2),
+      ];
+      const [otherX1, otherX2] = [
+        Math.min(otherSeg.X1, otherSeg.X2),
+        Math.max(otherSeg.X1, otherSeg.X2),
+      ];
+
+      //  both segments vertical and on same Y line?
+      if (
+        isVertical(currSeg) &&
+        isVertical(otherSeg) &&
+        currSeg.X1 === otherSeg.X1
+      ) {
+        // is this segment inside the other segment or vice versa?
+        if (
+          (currY1 > otherY1 && currY2 < otherY2) ||
+          (otherY1 > currY1 && otherY2 < currY2)
+        ) {
+          overlaps++;
+          continue;
+        }
+
+        // does one of the segments have a point inside the other segment?
+        if (
+          (currY1 > otherY1 && currY1 < otherY2) ||
+          (currY2 > otherY1 && currY2 < otherY2) ||
+          (otherY1 > currY1 && otherY1 < currY2) ||
+          (otherY2 > currY1 && otherY2 < currY2)
+        ) {
+          overlaps++;
+          continue;
+        }
+      }
+      // both segments horizontal and on same X line?
+      else if (
+        isHorizontal(currSeg) &&
+        isHorizontal(otherSeg) &&
+        currSeg.Y1 === otherSeg.Y1
+      ) {
+        // is this segment inside the other segment or vice versa?
+        if (
+          (currX1 > otherX1 && currX2 < otherX2) ||
+          (otherX1 > currX1 && otherX2 < currX2)
+        ) {
+          overlaps++;
+          continue;
+        }
+
+        // does one of the segments have a point inside the other segment?
+        if (
+          (currX1 > otherX1 && currX1 < otherX2) ||
+          (currX2 > otherX1 && currX2 < otherX2) ||
+          (otherX1 > currX1 && otherX1 < currX2) ||
+          (otherX2 > currX1 && otherX2 < currX2)
+        ) {
+          overlaps++;
+          continue;
+        }
+      }
+      // does segment have points on the line formed by the other segment or vice versa?
+      else if (isVertical(currSeg) && isHorizontal(otherSeg)) {
+        if (
+          otherY1 >= currY1 &&
+          otherY1 <= currY2 &&
+          currX1 >= otherX1 &&
+          currX1 <= otherX2
+        ) {
+          overlaps++;
+          continue;
+        }
+      } else if (isHorizontal(currSeg) && isVertical(otherSeg)) {
+        if (
+          currY1 >= otherY1 &&
+          currY1 <= otherY2 &&
+          otherX1 >= currX1 &&
+          otherX1 <= currX2
+        ) {
+          overlaps++;
+          continue;
+        }
+      }
+    }
+  }
+
+  return overlaps;
+}
+
+function isVertical(ls: LineSegment) {
+  return ls.X1 === ls.X2;
+}
+
+function isHorizontal(ls: LineSegment) {
+  return ls.Y1 === ls.Y2;
 }
 
 function brute(
