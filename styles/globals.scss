@@ -8,7 +8,7 @@
   font-family: "Rajdhani Mod";
   font-weight: 600;
   src:
-    // Super Modern Browsers
+  // Super Modern Browsers
     url("/fonts/rajdhani_mod_semibold.woff2") format("woff2"),
     // Pretty Modern Browsers
     url("/fonts/rajdhani_mod_semibold.woff") format("woff"),
@@ -16,6 +16,7 @@
     url("/fonts/Rajdhani Mod SemiBold.ttf") format("truetype"),
     // Legacy iOS
     url("/fonts/rajdhani_mod_semibold.svg#rajdhani_modsemibold") format("svg");
+  font-display: swap;
 }
 
 @font-face {
@@ -30,6 +31,7 @@
     url("/fonts/Rajdhani Mod Medium.ttf") format("truetype"),
     // Legacy iOS
     url("/fonts/rajdhani_mod_medium.svg#rajdhani_modmedium") format("svg");
+  font-display: swap;
 }
 
 $color-highlight: #d0ed57;
