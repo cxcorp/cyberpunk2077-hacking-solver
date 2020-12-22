@@ -221,20 +221,6 @@ export default function Home() {
             property="og:title"
             content="Cyberpunk 2077 Hacking Minigame Solver"
           />
-          <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://cyberpunk-hacker.com" />
-          <meta
-            property="og:description"
-            content="Cyberpunk 2077 Breach Protocol hacking minigame solver."
-          />
-          <meta
-            name="description"
-            content="Cyberpunk 2077 Breach Protocol hacking minigame solver."
-          />
-          <meta
-            property="article:published_time"
-            content="2020-12-20T11:37:00+00:00"
-          />
         </Head>
 
         <SolutionModal
