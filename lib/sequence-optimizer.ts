@@ -97,6 +97,7 @@ function applyShift(
   includes: number[][]
 ): MatchResult {
   let result: number[] = [];
+
   if (shift.dir === ShiftDir.Right) {
     const output = [...target];
     output.length = Math.max(shiftee.length + shift.shift, target.length);
@@ -128,7 +129,7 @@ function doesMatchRight(
   b: readonly number[]
 ) {
   for (let i = offset; i < b.length; i++) {
-    if (a[i - offset] !== b[offset]) {
+    if (a[i - offset] !== b[i]) {
       return false;
     }
   }
