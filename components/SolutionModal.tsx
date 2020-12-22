@@ -115,15 +115,16 @@ const renderSolution = (
       offsetY = -(square + squareInternalPad * 2) / 2;
     }
 
-    ctx.moveTo(
-      curr.x * square * 2 + square / 2 + offsetX + paddingX,
-      curr.y * square * 2 + square / 2 + offsetY + paddingY - 3
-    );
-    ctx.lineTo(
-      next.x * square * 2 + square / 2 - offsetX + paddingX,
-      next.y * square * 2 + square / 2 - offsetY + paddingY - 3
-    );
+    ctx.beginPath();
+    const x1 = curr.x * square * 2 + square / 2 + offsetX + paddingX;
+    const y1 = curr.y * square * 2 + square / 2 + offsetY + paddingY - 3;
+    const x2 = next.x * square * 2 + square / 2 - offsetX + paddingX;
+    const y2 = next.y * square * 2 + square / 2 - offsetY + paddingY - 3;
+
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
     ctx.stroke();
+    ctx.closePath();
   }
 };
 
