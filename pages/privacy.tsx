@@ -10,6 +10,10 @@ const PrivacyPage = () => {
     <>
       <Head>
         <title>Privacy Policy | Cyberpunk 2077 Hacking Minigame Solver</title>
+        <meta
+          property="og:title"
+          content="Privacy Policy | Cyberpunk 2077 Hacking Minigame Solver"
+        />
       </Head>
       <Layout>
         <Container as="main" className={styles.main}>
