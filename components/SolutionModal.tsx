@@ -1,7 +1,7 @@
 import React, { FC, useRef, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { debounce } from "lodash-es";
+import debounce from "lodash/debounce";
 import { Coord, SolverResult } from "../lib/bruter";
 import styles from "../styles/SolutionModal.module.scss";
 
