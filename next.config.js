@@ -1,3 +1,7 @@
-const withTM = require("next-transpile-modules");
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
 
-module.exports = withTM(["lodash-es"]);
+module.exports = (phase, defaultConfig) => {
+  return withBundleAnalyzer(defaultConfig);
+};

@@ -1,4 +1,3 @@
-import { maxBy } from "lodash-es";
 import optimizeSequences from "./sequence-optimizer";
 import { getRootsAllValues } from "./tree";
 
@@ -53,6 +52,17 @@ function removeDuplicates(arr: OptimizedSequence[]) {
   });
 }
 
+function maxBy<T>(arr: T[], fn: (t: T) => number): number | undefined {
+  if (arr.length === 0) {
+    return undefined;
+  }
+
+  return arr.reduce((max, curr) => {
+    const val = fn(curr);
+    return Math.max(val, max);
+  }, fn(arr[0]));
+}
+
 export default function runSolver(
   matrix: number[][],
   sequences: number[][],
@@ -74,8 +84,7 @@ export default function runSolver(
   );
   const dedupedSeqs = removeDuplicates(seqsThatFitInBuffer);
 
-  const maxIncludes = maxBy(dedupedSeqs, (r) => r.includes.length)?.includes
-    .length;
+  const maxIncludes = maxBy(dedupedSeqs, (r) => r.includes.length);
 
   for (let includeCount = maxIncludes!; includeCount > 0; includeCount--) {
     const matches = dedupedSeqs.filter(
