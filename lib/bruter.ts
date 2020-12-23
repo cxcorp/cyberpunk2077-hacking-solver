@@ -97,6 +97,9 @@ export default function runSolver(
         const solutions = brute(pattern, matrix, true);
         return solutions.map((solution) => ({ match, solution }));
       })
+      // it's possible that a sequence was found which includes skips
+      // filter out solutions that are longer than the buffer size!
+      .filter((seq) => seq.solution.length <= bufferSize)
       .map((s) => ({ ...s, routeWeight: calculateRouteWeight(s.solution) }))
       .sort(({ routeWeight: a }, { routeWeight: b }) => {
         const aScore =
