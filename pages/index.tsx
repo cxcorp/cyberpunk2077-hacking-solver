@@ -30,7 +30,7 @@ BD 55 BD 7A 1C 1C
 
 const hexMatrixRegex = /[0-9a-f\s\n\r]/i;
 
-function HackBoxTextBox() {
+function CodeMatrixTextBox() {
   const { matrixText, onMatrixChanged } = useAppContext();
 
   const onChange = useCallback(
@@ -46,7 +46,7 @@ function HackBoxTextBox() {
       value={matrixText}
       onChange={onChange}
       placeholder={placeholder}
-      className={styles["hackbox-textbox"]}
+      className={styles["code-matrix-textbox"]}
     />
   );
 }
@@ -59,7 +59,7 @@ function HackBox() {
         <h3 className={styles.hackbox__header_text}>ENTER CODE MATRIX</h3>
       </div>
       <div className={styles.hackbox__inside}>
-        <HackBoxTextBox />
+        <CodeMatrixTextBox />
       </div>
     </div>
   );
