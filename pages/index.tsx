@@ -8,14 +8,10 @@ import React, {
 } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
-import {
-  AppContext,
-  AppContextType,
-  useAppContext,
-} from "../components/AppContext";
+import { AppContext, AppContextType } from "../components/AppContext";
 import Layout from "../components/Layout";
-import FilteredTextArea from "../components/FilteredTextArea";
-import CodeMatrixTextBox from '../components/CodeMatrixTextBox'
+import CodeMatrixTextBox from "../components/CodeMatrixTextBox";
+import SequencesTextBox from "../components/SequencesTextBox";
 import BufferSizeBox from "../components/BufferSizeBox";
 import MainTitle from "../components/MainTitle";
 import SolutionModal from "../components/SolutionModal";
@@ -33,33 +29,6 @@ function HackBox() {
         <CodeMatrixTextBox />
       </div>
     </div>
-  );
-}
-
-const sequencesPlaceholder = `BD E9 1C
-BD 7A BD
-BD 1C BD 55`;
-
-const hexMatrixRegex = /[0-9a-f\s\n\r]/i;
-
-function SequencesTextBox() {
-  const { sequencesText, onSequencesChanged } = useAppContext();
-
-  const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onSequencesChanged(e.currentTarget.value);
-    },
-    [onSequencesChanged]
-  );
-
-  return (
-    <FilteredTextArea
-      regex={hexMatrixRegex}
-      value={sequencesText}
-      onChange={onChange}
-      placeholder={sequencesPlaceholder}
-      className={styles["sequences-selector"]}
-    />
   );
 }
 
