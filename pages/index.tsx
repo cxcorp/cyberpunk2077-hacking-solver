@@ -1,5 +1,6 @@
 import Head from "next/head";
 import React, {
+  FC,
   useState,
   useMemo,
   useCallback,
@@ -15,36 +16,33 @@ import SequencesTextBox from "../components/SequencesTextBox";
 import BufferSizeBox from "../components/BufferSizeBox";
 import MainTitle from "../components/MainTitle";
 import SolutionModal from "../components/SolutionModal";
-import styles from "../styles/Home.module.scss";
+
 import { SolverResult } from "../lib/bruter";
+import styles from "../styles/Index.module.scss";
 
-function HackBox() {
-  return (
-    <div className={styles.hackbox}>
-      <div className={styles.hackbox__header}>
-        <div className={styles.hackbox__sequence}>2</div>
-        <h3 className={styles.hackbox__header_text}>ENTER CODE MATRIX</h3>
-      </div>
-      <div className={styles.hackbox__inside}>
-        <CodeMatrixTextBox />
-      </div>
+const HackBox = () => (
+  <div className={styles.hackbox}>
+    <div className={styles.hackbox__header}>
+      <div className={styles.hackbox__sequence}>2</div>
+      <h3 className={styles.hackbox__header_text}>ENTER CODE MATRIX</h3>
     </div>
-  );
-}
+    <div className={styles.hackbox__inside}>
+      <CodeMatrixTextBox />
+    </div>
+  </div>
+);
 
-function SequenceBox() {
-  return (
-    <div className={styles["sequence-box"]}>
-      <div className={styles["sequence-box__header"]}>
-        <div className={styles["sequence-box__sequence"]}>3</div>
-        <h3 className={styles["sequence-box__header-text"]}>ENTER SEQUENCES</h3>
-      </div>
-      <div className={styles["sequence-box__inside"]}>
-        <SequencesTextBox />
-      </div>
+const SequenceBox = () => (
+  <div className={styles["sequence-box"]}>
+    <div className={styles["sequence-box__header"]}>
+      <div className={styles["sequence-box__sequence"]}>3</div>
+      <h3 className={styles["sequence-box__header-text"]}>ENTER SEQUENCES</h3>
     </div>
-  );
-}
+    <div className={styles["sequence-box__inside"]}>
+      <SequencesTextBox />
+    </div>
+  </div>
+);
 
 const parseMatrix = (str: string): number[][] =>
   str
@@ -57,13 +55,10 @@ const parseMatrix = (str: string): number[][] =>
         .map((n) => parseInt(n, 16))
     );
 
-function HackButton({
-  disabled,
-  onClick,
-}: {
+const HackButton: FC<{
   disabled?: boolean;
   onClick: () => void;
-}) {
+}> = ({ disabled, onClick }) => {
   const handleClick = useCallback(() => {
     onClick();
   }, [onClick]);
@@ -78,9 +73,9 @@ function HackButton({
       </button>
     </div>
   );
-}
+};
 
-export default function Home() {
+const Index = () => {
   const [matrixText, onMatrixChanged] = useState<string>("");
   const [sequencesText, onSequencesChanged] = useState<string>("");
   const [bufferSize, onBufferSizeChanged] = useState<number>(4);
@@ -235,4 +230,6 @@ export default function Home() {
       </Layout>
     </AppContext.Provider>
   );
-}
+};
+
+export default Index;
