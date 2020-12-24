@@ -42,7 +42,7 @@ BD 1C BD 55`;
 
 const hexMatrixRegex = /[0-9a-f\s\n\r]/i;
 
-function SequencesSelector() {
+function SequencesTextBox() {
   const { sequencesText, onSequencesChanged } = useAppContext();
 
   const onChange = useCallback(
@@ -71,7 +71,7 @@ function SequenceBox() {
         <h3 className={styles["sequence-box__header-text"]}>ENTER SEQUENCES</h3>
       </div>
       <div className={styles["sequence-box__inside"]}>
-        <SequencesSelector />
+        <SequencesTextBox />
       </div>
     </div>
   );
