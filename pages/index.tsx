@@ -15,41 +15,12 @@ import {
 } from "../components/AppContext";
 import Layout from "../components/Layout";
 import FilteredTextArea from "../components/FilteredTextArea";
+import CodeMatrixTextBox from '../components/CodeMatrixTextBox'
 import BufferSizeBox from "../components/BufferSizeBox";
 import MainTitle from "../components/MainTitle";
 import SolutionModal from "../components/SolutionModal";
 import styles from "../styles/Home.module.scss";
 import { SolverResult } from "../lib/bruter";
-
-const placeholder = `7A 55 E9 E9 1C 55
-55 7A 1C 7A E9 55
-55 1C 1C 55 E9 BD
-BD 1C 7A 1C 55 BD
-BD 55 BD 7A 1C 1C
-1C 55 55 7A 55 7A`;
-
-const hexMatrixRegex = /[0-9a-f\s\n\r]/i;
-
-function CodeMatrixTextBox() {
-  const { matrixText, onMatrixChanged } = useAppContext();
-
-  const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onMatrixChanged(e.currentTarget.value);
-    },
-    [onMatrixChanged]
-  );
-
-  return (
-    <FilteredTextArea
-      regex={hexMatrixRegex}
-      value={matrixText}
-      onChange={onChange}
-      placeholder={placeholder}
-      className={styles["code-matrix-textbox"]}
-    />
-  );
-}
 
 function HackBox() {
   return (
@@ -68,6 +39,8 @@ function HackBox() {
 const sequencesPlaceholder = `BD E9 1C
 BD 7A BD
 BD 1C BD 55`;
+
+const hexMatrixRegex = /[0-9a-f\s\n\r]/i;
 
 function SequencesSelector() {
   const { sequencesText, onSequencesChanged } = useAppContext();

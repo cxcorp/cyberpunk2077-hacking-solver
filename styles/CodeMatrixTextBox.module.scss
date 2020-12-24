@@ -1,0 +1,44 @@
+@use "sass:color";
+@import "./common";
+
+.code-matrix-textbox {
+  @include code-font;
+  flex: 1 1 auto;
+  height: 25rem;
+
+  border-radius: 3px;
+  border: 1px solid color.adjust($color-lighter-bg, $alpha: -0.3);
+  background: transparent;
+  padding: 1rem 10%;
+  color: $color-highlight;
+
+  font-size: 1.4rem;
+  line-height: 1.7em;
+  word-spacing: 0.4rem;
+
+  @include media-breakpoint-up(sm) {
+    font-size: 1.5rem;
+    line-height: 1.8em;
+    word-spacing: 0.7rem;
+  }
+
+  @include media-breakpoint-up(md) {
+    font-size: 1.6rem;
+    line-height: 1.9em;
+    word-spacing: 0.8rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    font-size: 1.7rem;
+    line-height: 2em;
+    word-spacing: 0.9rem;
+  }
+
+  @include media-breakpoint-up(xl) {
+    font-size: 1.8rem;
+    line-height: 2.1em;
+    word-spacing: 1rem;
+  }
+
+  text-transform: uppercase;
+}
