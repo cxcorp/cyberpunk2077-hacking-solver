@@ -11,6 +11,19 @@ function PrivacyLink() {
   );
 }
 
+function GitHubLink() {
+  return (
+    <a
+      href="https://github.com/cxcorp/cyberpunk2077-hacking-solver"
+      rel="noopener"
+      className={styles["github-link"]}
+      target="_blank"
+    >
+      GitHub
+    </a>
+  );
+}
+
 function Copyright({ className }: { className?: string }) {
   return <p className={className}>cxcorp | 2020</p>;
 }
@@ -24,10 +37,9 @@ const Layout: FC = ({ children }) => {
         <footer className={styles.footer}>
           <Container>
             <Row>
-              <Col>
+              <Col className={styles.footer__content}>
+                <GitHubLink />
                 <PrivacyLink />
-              </Col>
-              <Col>
                 <Copyright className={styles.copyright} />
               </Col>
             </Row>
