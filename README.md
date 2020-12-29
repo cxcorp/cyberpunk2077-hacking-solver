@@ -2,7 +2,7 @@
 
 A web-based solver for the Cyberpunk 2077 Breach Protocol hacking minigame.
 
-Follow my progress on an automated code matrix reader (client-side JS only) here: https://github.com/cxcorp/cyberpunk2077-hacker-camera-proto
+Follow my progress on an automated code matrix reader (client-side JS only - OpenCV.js & Tesseract.js) here: https://github.com/cxcorp/cyberpunk2077-hacker-camera-proto
 
 
 ## Development
