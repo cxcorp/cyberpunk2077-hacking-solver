@@ -26,10 +26,7 @@ export interface MatchResult {
   includes: number[][];
 }
 
-export default function optimizeSequence(candidates: number[][]) {
-  //const candidate = candidates[0];
-  //const targets = candidates.slice(1);
-
+export default function optimizeSequence(candidates: number[][], bufferSize: number) {
   let rootNodes: Node<MatchResult>[] = [];
 
   for (let c = 0; c < candidates.length; c++) {
@@ -46,7 +43,9 @@ export default function optimizeSequence(candidates: number[][]) {
     }
   }
 
-  return rootNodes;
+  return rootNodes.filter(function(rootNode) {
+    return rootNode.value.result.length <= bufferSize;
+  });
 }
 
 function minimatch(split: MatchResult, remain: number[][]): Node<MatchResult> {
