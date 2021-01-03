@@ -8,7 +8,7 @@ const sequencesPlaceholder = `BD E9 1C
 BD 7A BD
 BD 1C BD 55`;
 
-const hexMatrixRegex = /[0-9a-f\s\n\r]/i;
+const hexMatrixRegex = /([0-9a-f][0-9a-f])|[\n\r\s]/i;
 
 const SequencesTextBox = () => {
   const { sequencesText, onSequencesChanged } = useAppContext();
