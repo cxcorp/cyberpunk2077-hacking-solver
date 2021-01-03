@@ -11,7 +11,7 @@ BD 1C 7A 1C 55 BD
 BD 55 BD 7A 1C 1C
 1C 55 55 7A 55 7A`;
 
-const hexMatrixRegex = /[0-9a-f\s\n\r]/i;
+const hexMatrixRegex = /^([0-9a-f\s\n\r])+$/i;
 
 const CodeMatrixTextBox = () => {
   const { matrixText, onMatrixChanged } = useAppContext();
