@@ -24,6 +24,22 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
+### Testing
+Any tests under `__tests__` will be run when executing `npm run test`.
+
+When executing `npm run test:watch`, the Jest CLI is invoked with the `--watch` option ([see here](https://jestjs.io/docs/en/cli#--watch])).
+
+While watch is running the following commands may be used:
+```bash
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press q to quit watch mode.
+ › Press Enter to trigger a test run.
+```
+
 ### Learn More
 
 To learn more about Next.js, take a look at the following resources:
