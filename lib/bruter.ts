@@ -34,7 +34,7 @@ export interface SolverResult {
   solution: Coord[];
 }
 
-function removeDuplicates(arr: OptimizedSequence[]) {
+export function removeDuplicates(arr: OptimizedSequence[]) {
   const keys = new Set<string>();
   return arr.filter((seq) => {
     const key =
