@@ -40,6 +40,17 @@ Watch Usage
  › Press Enter to trigger a test run.
 ```
 
+#### TSLint
+Run [TSLint](https://palantir.github.io/tslint/) for suggestions on a given file or directory, for example:
+```bash
+$ tslint -c tslint.json './lib/**/*.ts'
+```
+
+TSLint also has plugins to enable highlighting (and often automatically fixing) issues in a number of popular IDEs:
+- [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin)
+- [WebStorm, IntelliJ, etc](https://www.jetbrains.com/help/webstorm/using-tslint-code-quality-tool.html)
+- [Atom](https://atom.io/packages/linter-tslint)
+
 ### Learn More
 
 To learn more about Next.js, take a look at the following resources:
