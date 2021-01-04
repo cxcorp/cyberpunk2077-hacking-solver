@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import cz from "classnames";
+import { createWorker, PSM } from "tesseract.js";
 
 import {
   AppContext,
@@ -26,7 +27,9 @@ import Button from "../components/Button";
 import { parseMatrix } from "../util";
 import { sendPrioritizationStats, sendSolverStats } from "../lib/stats";
 import { SolverResult } from "../lib/bruter";
+import * as CvService from "../services/cv";
 import styles from "../styles/Index.module.scss";
+import cvWorker from "../services/cv.worker";
 
 const HackBox = () => (
   <div className={styles.hackbox}>
@@ -112,6 +115,148 @@ const Index = ({
     onRunSolver,
   } = useAppContext();
 
+  const cvWorkerRef = useRef<CvService.CvWorker>(null);
+  const ocrWorkerRef = useRef<Tesseract.Worker>(null);
+
+  useEffect(() => {
+    const uniqChars = (arr) => [...new Set(arr.join("").split(""))];
+    const getOcrWhitelist = () =>
+      [" ", ...uniqChars(["1C", "55", "7A", "BD", "E9", "FF"])].join("");
+
+    async function makeWorkers() {
+      const cv = await CvService.createWorker();
+      cv.worker.addEventListener("message", (e) => console.log("onmessage", e));
+      cv.worker.addEventListener("error", (e) => console.error("onerror", e));
+      await cv.load();
+      console.log("CV worker loaded ");
+      cvWorkerRef.current = cv;
+
+      const ocrWorker = createWorker({
+        langPath: "/ocr",
+        gzip: true,
+        logger: (msg) => {
+          console.log("[tesseract] ", msg);
+        },
+        errorHandler: (err) => {
+          console.error("[tesseract] ", err);
+        },
+      });
+
+      console.log("loading worker");
+      await ocrWorker.load();
+      console.log("loading OCR language data");
+      await ocrWorker.loadLanguage("eng");
+      console.log("initializing OCR language data");
+      await ocrWorker.initialize("eng");
+      await ocrWorker.setParameters({
+        tessedit_char_whitelist: getOcrWhitelist(),
+        // @ts-ignore
+        tessedit_pageseg_mode: PSM.SINGLE_BLOCK, // if block doesn't work well enough, slice grids into columns
+      });
+      ocrWorkerRef.current = ocrWorker;
+      console.log("OCR worker loaded");
+    }
+
+    makeWorkers();
+  }, []);
+
+  const outputCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const getFileImageData = (file: File) => {
+      return new Promise<ImageData>((resolve, reject) => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const img = document.createElement("img");
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+
+          const imageData = ctx.getImageData(0, 0, img.width, img.height);
+          resolve(imageData);
+        };
+        img.onerror = () => {
+          reject(new Error("Failed to load clipboard image!"));
+        };
+
+        const fr = new FileReader();
+        fr.onload = () => {
+          const dataUrl = fr.result as string;
+          img.src = dataUrl;
+        };
+        fr.onerror = () => {
+          reject(new Error("Failed to read file!"));
+        };
+        fr.readAsDataURL(file);
+      });
+    };
+
+    async function processImage(imageData: ImageData) {
+      console.log("processing screenshot");
+      const output = await cvWorkerRef.current.processScreenshot(imageData);
+
+      const ctx = outputCanvasRef.current.getContext("2d");
+      const putImage = (img: ImageData) => {
+        outputCanvasRef.current.width = img.width;
+        outputCanvasRef.current.height = img.height;
+        ctx.putImageData(img, 0, 0);
+      };
+
+      console.log("running OCR");
+      console.log("OCRing code matrix");
+      putImage(output.codeMatrix);
+      const codeMatrix = await ocrWorkerRef.current.recognize(
+        outputCanvasRef.current
+      );
+      console.log("%cCODE MATRIX OCR RESULT:", "color:#00ff00");
+      console.log(codeMatrix.data);
+
+      console.log("OCRing sequences");
+      putImage(output.sequences);
+      const sequences = await ocrWorkerRef.current.recognize(
+        outputCanvasRef.current
+      );
+      console.log("%cSEQUENCES OCR RESULT:", "color:#00ff00");
+      console.log(sequences.data);
+
+      putImage(output.comboImage);
+    }
+
+    async function handlePaste(e: ClipboardEvent) {
+      if (!ocrWorkerRef.current) {
+        throw new Error("[debug] wait for ocr worker");
+      }
+      const items = e.clipboardData.items;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.kind !== "file" || !item.type.startsWith("image")) {
+          continue;
+        }
+
+        console.log({
+          i,
+          kind: item.kind,
+          type: item.type,
+        });
+
+        console.log("reading clipboard file");
+        const file = item.getAsFile();
+        console.log("getting file image data");
+        const imageData = await getFileImageData(file);
+        setTimeout(() => processImage(imageData), 0);
+      }
+    }
+
+    window.addEventListener("paste", handlePaste);
+
+    return () => {
+      window.removeEventListener("paste", handlePaste);
+    };
+  }, []);
+
   const inputsEmpty = useMemo(
     () => sequencesText.trim().length === 0 || matrixText.trim().length === 0,
     [sequencesText, matrixText]
@@ -180,6 +325,12 @@ const Index = ({
         )}
 
         <form onSubmit={handleHackButtonClick}>
+          <Row>
+            <Col>
+              <canvas ref={outputCanvasRef} />
+            </Col>
+          </Row>
+
           <Row>
             <Col lg={8}>
               <BufferSizeBox />
