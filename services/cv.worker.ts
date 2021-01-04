@@ -349,6 +349,7 @@ const processScreenshot = (imageData: ImageData) => {
       fontHeight: seqFontHeight,
       gridHeight: Math.floor(uiHeight * 0.066),
     });
+    image.delete()
 
     const outputs = new cv.MatVector();
     outputs.push_back(threshold);
