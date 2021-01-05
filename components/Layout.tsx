@@ -30,7 +30,7 @@ function Copyright({ className }: { className?: string }) {
 
 const usePageView = () => {
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.UA_ENABLED !== "true") {
       return;
     }
 

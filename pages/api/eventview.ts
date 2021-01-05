@@ -43,21 +43,25 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).end();
   }
 
-  const { dp = "/" } = req.body;
+  const { dp = "/", evs } = req.body;
   const ip = anonymizeIp(grabIp(req));
 
-  const query = querystring.stringify({
-    v: 1,
-    t: "pageview",
-    tid: TID,
-    cid: getCid(ip, req.headers["user-agent"]),
-    dh: req.headers.host,
-    dp,
-    ua: req.headers["user-agent"],
-    ...(ip ? { uip: ip } : {}),
-  });
+  const queries = evs.map((ev) =>
+    querystring.stringify({
+      v: 1,
+      t: "event",
+      tid: TID,
+      cid: getCid(ip, req.headers["user-agent"]),
+      ...ev,
+      dh: req.headers.host,
+      dp,
+      ua: req.headers["user-agent"],
+      ...(ip ? { uip: ip } : {}),
+    })
+  );
+  const query = queries.join("\n");
 
-  return fetch(`https://${HOST}/collect`, { method: "POST", body: query })
+  return fetch(`https://${HOST}/batch`, { method: "POST", body: query })
     .then(() => {
       res.status(200).end();
     })
