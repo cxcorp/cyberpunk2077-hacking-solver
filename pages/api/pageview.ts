@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import querystring from "querystring";
 import fetch from "node-fetch";
+import crypto from "crypto";
 
 const HOST = process.env.PAGEVIEW_HOST;
 const TID = process.env.PAGEVIEW_TID;
@@ -26,6 +27,13 @@ const anonymizeIp = (ip?: string) => {
   return octets.join(".");
 };
 
+const getCid = (ip?: string, ua?: string): string => {
+  const shasum = crypto.createHash("sha1");
+  shasum.update(ip || "0.0.0.0");
+  shasum.update(ua || "none");
+  return shasum.digest("hex");
+};
+
 export default (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(405).send("Method Not Allowed");
@@ -42,7 +50,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     v: 1,
     t: "pageview",
     tid: TID,
-    cid: 555, // anon client ID
+    cid: getCid(ip, req.headers["user-agent"]),
     dh: req.headers.host,
     dp,
     ua: req.headers["user-agent"],
