@@ -44,7 +44,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     tid: TID,
     cid: 555, // anon client ID
     dh: req.headers.host,
-    dp: dp,
+    dp,
     ua: req.headers["user-agent"],
     ...(ip ? { uip: ip } : {}),
   });

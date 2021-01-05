@@ -14,7 +14,9 @@ interface AppCallbacks {
 
 export interface AppContextType extends AppState, AppCallbacks {}
 
+// tslint:disable-next-line:no-empty
 const noOp = () => {};
+
 export const AppContext = React.createContext<AppContextType>({
   matrixText: "",
   sequencesText: "",
