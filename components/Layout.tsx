@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import Link from "next/link";
 import { Container, Row, Col } from "react-bootstrap";
 import styles from "../styles/Layout.module.scss";
@@ -28,7 +28,25 @@ function Copyright({ className }: { className?: string }) {
   return <p className={className}>cxcorp | 2020</p>;
 }
 
+const usePageView = () => {
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      return;
+    }
+
+    fetch(`/api/pageview`, {
+      method: "POST",
+      body: JSON.stringify({ dp: window.location.pathname }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).catch(() => {});
+  }, []);
+};
+
 const Layout: FC = ({ children }) => {
+  usePageView();
+
   return (
     <>
       <div className={styles.backdrop} />
