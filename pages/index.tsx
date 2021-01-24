@@ -8,6 +8,7 @@ import React, {
   useEffect,
 } from "react";
 import { Container, Row, Col } from "react-bootstrap";
+import cz from "classnames";
 
 import { AppContext, AppContextType } from "../components/AppContext";
 import Layout from "../components/Layout";
@@ -107,6 +108,26 @@ const sendStats = async ({
       },
     });
   } catch (e) {}
+};
+
+const Separator = ({ className }: { className?: string }) => (
+  <hr className={cz(styles.separator, className)} />
+);
+
+const ReportIssue = () => {
+  return (
+    <p className={styles["report-issue"]}>
+      Having issues? Solver not working?{" "}
+      <a
+        href="https://github.com/cxcorp/cyberpunk2077-hacking-solver/issues"
+        rel="noopener"
+        target="_blank"
+      >
+        Report an issue
+      </a>
+      .
+    </p>
+  );
 };
 
 const Index = () => {
@@ -263,7 +284,13 @@ const Index = () => {
               </Col>
             </Row>
           </form>
+          <Separator className="mt-5" />
 
+          <Row>
+            <Col>
+              <ReportIssue />
+            </Col>
+          </Row>
           <Row className="mt-5">
             <Col lg={8}>
               <p>

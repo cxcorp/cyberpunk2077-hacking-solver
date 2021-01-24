@@ -316,3 +316,15 @@
       inset 10px 20px 30px rgba(208, 237, 87, 0.7);
   }
 }
+
+.separator {
+  border-top: 1px solid #333;
+}
+
+.report-issue {
+  font-size: 1.1em;
+
+  a:not(:hover) {
+    color: color.adjust(#5ee9f2, $alpha: -0.3);
+  }
+}
