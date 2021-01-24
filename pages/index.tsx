@@ -139,7 +139,7 @@ const Index = () => {
   stateRef.current = state;
 
   const inputsEmpty = useMemo(
-    () => sequencesText.trim().length === 0 && matrixText.trim().length === 0,
+    () => sequencesText.trim().length === 0 || matrixText.trim().length === 0,
     [sequencesText, matrixText]
   );
   const [solverRunning, setSolverRunning] = useState<boolean>(false);
