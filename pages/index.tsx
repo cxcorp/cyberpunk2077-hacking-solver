@@ -224,9 +224,6 @@ const Index = ({
     }
 
     async function handlePaste(e: ClipboardEvent) {
-      if (!ocrWorkerRef.current) {
-        throw new Error("[debug] wait for ocr worker");
-      }
       const items = e.clipboardData.items;
 
       for (let i = 0; i < items.length; i++) {
@@ -241,11 +238,18 @@ const Index = ({
           type: item.type,
         });
 
+        if (!ocrWorkerRef.current) {
+          throw new Error("[debug] wait for ocr worker");
+        }
+
         console.log("reading clipboard file");
         const file = item.getAsFile();
         console.log("getting file image data");
         const imageData = await getFileImageData(file);
         setTimeout(() => processImage(imageData), 0);
+
+        e.preventDefault();
+        return;
       }
     }
 
