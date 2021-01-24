@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 
 import { useAppContext } from "../components/AppContext";
 import FilteredTextArea from "../components/FilteredTextArea";
@@ -9,9 +9,24 @@ BD 7A BD
 BD 1C BD 55`;
 
 const hexMatrixRegex = /^([0-9a-f\s\n\r])+$/i;
+const hexMatrixError = "Allowed digits: 1C 55 7A BD E9 FF";
 
 const SequencesTextBox = () => {
   const { sequencesText, onSequencesChanged } = useAppContext();
+  const [error, setError] = useState<string>("");
+
+  const validate = useCallback(
+    (value: string) => {
+      if (value.length > 0 && !hexMatrixRegex.test(value)) {
+        setError(hexMatrixError);
+        return hexMatrixError;
+      }
+
+      setError("");
+      return "";
+    },
+    [setError]
+  );
 
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -21,13 +36,18 @@ const SequencesTextBox = () => {
   );
 
   return (
-    <FilteredTextArea
-      regex={hexMatrixRegex}
-      value={sequencesText}
-      onChange={onChange}
-      placeholder={sequencesPlaceholder}
-      className={styles["sequences-selector"]}
-    />
+    <>
+      <FilteredTextArea
+        validate={validate}
+        value={sequencesText}
+        onChange={onChange}
+        placeholder={sequencesPlaceholder}
+        className={styles["sequences-selector"]}
+      />
+      {error && (
+        <span className={styles["sequences-selector__error"]}>{error}</span>
+      )}
+    </>
   );
 };
 export default SequencesTextBox;

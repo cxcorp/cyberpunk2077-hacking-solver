@@ -34,4 +34,11 @@
     line-height: 1.9em;
     word-spacing: 0.8rem;
   }
+
+  &__error {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: $color-error;
+    border-top: 2px solid $color-error;
+  }
 }

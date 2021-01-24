@@ -1,23 +1,30 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
+
+type ValidationMessage = string;
+export type FilteredTextAreaValidator = (value: string) => ValidationMessage;
 
 export interface FilteredTextAreaProps
   extends React.HTMLProps<HTMLTextAreaElement> {
-  regex: RegExp;
+  validate: FilteredTextAreaValidator;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 export default function FilteredTextArea(props: FilteredTextAreaProps) {
-  const { regex, ...textAreaProps } = props;
+  const { validate, onChange, ...textAreaProps } = props;
+  const textAreaEl = useRef<HTMLTextAreaElement>();
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = e.currentTarget.value;
-      if (newValue.length > 0 && !regex.test(newValue)) {
-        return;
-      }
-      props.onChange && props.onChange(e);
+      const validationMsg = validate(newValue);
+      textAreaEl.current.setCustomValidity(validationMsg);
+
+      onChange && onChange(e);
     },
-    [regex, props.onChange]
+    [validate, textAreaEl, onChange]
   );
 
-  return <textarea {...textAreaProps} onChange={handleChange} />;
+  return (
+    <textarea ref={textAreaEl} {...textAreaProps} onChange={handleChange} />
+  );
 }

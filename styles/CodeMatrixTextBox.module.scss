@@ -41,4 +41,11 @@
   }
 
   text-transform: uppercase;
+
+  &__error {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: $color-error;
+    border-top: 2px solid $color-error;
+  }
 }

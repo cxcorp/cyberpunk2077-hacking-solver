@@ -57,20 +57,15 @@ const parseMatrix = (str: string): number[][] =>
 
 const HackButton: FC<{
   disabled?: boolean;
-  onClick: () => void;
-}> = ({ disabled, onClick }) => {
-  const handleClick = useCallback(() => {
-    onClick();
-  }, [onClick]);
+}> = ({ disabled }) => {
   return (
     <div className={styles["hack-button"]}>
-      <button
+      <input
+        type="submit"
         disabled={disabled}
-        onClick={handleClick}
         className={styles["hack-button__button"]}
-      >
-        SOLVE
-      </button>
+        value="SOLVE"
+      />
     </div>
   );
 };
@@ -148,42 +143,47 @@ const Index = () => {
   const [solution, setSolution] = useState<SolverResult | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  const handleHackButtonClick = useCallback(async () => {
-    const { matrixText, sequencesText, bufferSize } = stateRef.current;
-    console.log("start");
-    setSolverRunning(true);
+  const handleHackButtonClick = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    setTimeout(async () => {
-      const runSolver = (await import("../lib/bruter")).default;
-      console.log("running");
-      const matrix = parseMatrix(matrixText);
-      const sequences = parseMatrix(sequencesText);
-      console.log(matrix, sequences);
-      const solution = runSolver(matrix, sequences, bufferSize);
-      console.log(solution);
+      const { matrixText, sequencesText, bufferSize } = stateRef.current;
+      console.log("start");
+      setSolverRunning(true);
 
-      sendStats({
-        bufferSize: bufferSize,
-        matrixSize: matrix[0].length,
-        sequenceCount: sequences.length,
-        sequencesMatched: solution.match.includes.length,
-        solutionLength: solution.match.result.length,
-      });
+      setTimeout(async () => {
+        const runSolver = (await import("../lib/bruter")).default;
+        console.log("running");
+        const matrix = parseMatrix(matrixText);
+        const sequences = parseMatrix(sequencesText);
+        console.log(matrix, sequences);
+        const solution = runSolver(matrix, sequences, bufferSize);
+        console.log(solution);
 
-      setSolution(solution);
-      setAllSequencesLen(sequences.length);
-      setCodeMatrix(matrix);
-      setModalVisible(true);
-      setSolverRunning(false);
-    }, 50);
-  }, [
-    stateRef,
-    setSolution,
-    setAllSequencesLen,
-    setModalVisible,
-    setSolverRunning,
-    setCodeMatrix,
-  ]);
+        sendStats({
+          bufferSize: bufferSize,
+          matrixSize: matrix[0].length,
+          sequenceCount: sequences.length,
+          sequencesMatched: solution.match.includes.length,
+          solutionLength: solution.match.result.length,
+        });
+
+        setSolution(solution);
+        setAllSequencesLen(sequences.length);
+        setCodeMatrix(matrix);
+        setModalVisible(true);
+        setSolverRunning(false);
+      }, 50);
+    },
+    [
+      stateRef,
+      setSolution,
+      setAllSequencesLen,
+      setModalVisible,
+      setSolverRunning,
+      setCodeMatrix,
+    ]
+  );
 
   const onModalHide = useCallback(() => setModalVisible(false), [
     setModalVisible,
@@ -239,29 +239,28 @@ const Index = () => {
             </noscript>
           )}
 
-          <Row>
-            <Col lg={8}>
-              <BufferSizeBox />
-            </Col>
-          </Row>
+          <form onSubmit={handleHackButtonClick}>
+            <Row>
+              <Col lg={8}>
+                <BufferSizeBox />
+              </Col>
+            </Row>
 
-          <Row>
-            <Col lg={8}>
-              <HackBox />
-            </Col>
-            <Col lg={4}>
-              <SequenceBox />
-            </Col>
-          </Row>
+            <Row>
+              <Col lg={8}>
+                <HackBox />
+              </Col>
+              <Col lg={4}>
+                <SequenceBox />
+              </Col>
+            </Row>
 
-          <Row>
-            <Col lg={8}>
-              <HackButton
-                disabled={solverRunning || inputsEmpty}
-                onClick={handleHackButtonClick}
-              />
-            </Col>
-          </Row>
+            <Row>
+              <Col lg={8}>
+                <HackButton disabled={solverRunning || inputsEmpty} />
+              </Col>
+            </Row>
+          </form>
 
           <Row className="mt-5">
             <Col lg={8}>
