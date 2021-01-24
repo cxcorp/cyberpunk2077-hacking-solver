@@ -29,7 +29,6 @@ import { sendPrioritizationStats, sendSolverStats } from "../lib/stats";
 import { SolverResult } from "../lib/bruter";
 import * as CvService from "../services/cv";
 import styles from "../styles/Index.module.scss";
-import cvWorker from "../services/cv.worker";
 
 const HackBox = () => (
   <div className={styles.hackbox}>
