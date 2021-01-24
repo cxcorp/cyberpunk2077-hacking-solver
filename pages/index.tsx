@@ -16,6 +16,7 @@ import SequencesTextBox from "../components/SequencesTextBox";
 import BufferSizeBox from "../components/BufferSizeBox";
 import MainTitle from "../components/MainTitle";
 import SolutionModal from "../components/SolutionModal";
+import Button from "../components/Button";
 
 import { SolverResult } from "../lib/bruter";
 import styles from "../styles/Index.module.scss";
@@ -60,12 +61,13 @@ const HackButton: FC<{
 }> = ({ disabled }) => {
   return (
     <div className={styles["hack-button"]}>
-      <input
+      <Button
         type="submit"
         disabled={disabled}
         className={styles["hack-button__button"]}
-        value="SOLVE"
-      />
+      >
+        SOLVE
+      </Button>
     </div>
   );
 };

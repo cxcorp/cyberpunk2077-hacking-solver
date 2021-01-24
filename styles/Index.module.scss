@@ -197,17 +197,8 @@
 
 .hack-button {
   &__button {
-    background: transparent;
-    border: 2px solid $color-highlight;
-    color: $color-highlight;
-    font-size: 1.5rem;
-    padding: 0.8rem 5rem;
     position: relative;
     overflow: hidden;
-  }
-
-  &__button:disabled {
-    opacity: 0.5;
   }
 
   &__button::after {
@@ -228,7 +219,7 @@
     animation-play-state: running;
     animation-fill-mode: forwards;
     animation-duration: 1s;
-    animation-direction: forwards;
+    animation-direction: normal;
     animation-iteration-count: infinite;
   }
 
