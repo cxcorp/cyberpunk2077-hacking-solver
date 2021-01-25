@@ -269,7 +269,7 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
           <Sb className={styles.title}>No solutions found!</Sb>
         </p>
         <p>
-          <Sb>Change sequence priority by dragging</Sb>
+          <Sb>Change sequence priority by dragging:</Sb>
         </p>
         <SortableSequenceList
           axis="y"
@@ -299,7 +299,7 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
           <Sb className={styles.title}>Partial solution found!</Sb>
         </p>
         <p>
-          <Sb>Change sequence priority by dragging</Sb>
+          <Sb>Change sequence priority by dragging:</Sb>
         </p>
         <SortableSequenceList
           axis="y"
