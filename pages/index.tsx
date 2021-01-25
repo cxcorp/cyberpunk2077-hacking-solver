@@ -67,33 +67,43 @@ const HackButton: FC<{
   );
 };
 
-const sendStats = async ({
-  bufferSize,
-  sequenceCount,
-  sequencesMatched,
-  solutionLength,
-  matrixSize,
-}) => {
-  if (process.env.NEXT_PUBLIC_UA_ENABLED !== "true") {
-    console.log("ne");
-    console.log(process.env.NEXT_PUBLIC_UA_ENABLED);
-    return null;
-  } //ec, ea, el, ev
-
-  const evs = [
-    { ec: "Solver", ea: "Buffer size", el: `${bufferSize}`, ev: 1 },
-    { ec: "Solver", ea: "Sequence count", el: `${sequenceCount}`, ev: 1 },
-    {
-      ec: "Solver",
-      ea: "Sequences matched",
-      el: `${sequencesMatched}`,
-      ev: 1,
-    },
-    { ec: "Solver", ea: "Solution length", el: `${solutionLength}`, ev: 1 },
-    { ec: "Solver", ea: "Matrix size", el: `${matrixSize}`, ev: 1 },
-  ];
-
+const sendStats = async (
+  collector: () => {
+    bufferSize: number;
+    sequenceCount: number;
+    sequencesMatched: number;
+    solutionLength: number;
+    matrixSize: number;
+  }
+) => {
   try {
+    if (process.env.NEXT_PUBLIC_UA_ENABLED !== "true") {
+      console.log("ne");
+      console.log(process.env.NEXT_PUBLIC_UA_ENABLED);
+      return null;
+    } //ec, ea, el, ev
+
+    const {
+      bufferSize,
+      sequenceCount,
+      sequencesMatched,
+      solutionLength,
+      matrixSize,
+    } = collector();
+
+    const evs = [
+      { ec: "Solver", ea: "Buffer size", el: `${bufferSize}`, ev: 1 },
+      { ec: "Solver", ea: "Sequence count", el: `${sequenceCount}`, ev: 1 },
+      {
+        ec: "Solver",
+        ea: "Sequences matched",
+        el: `${sequencesMatched}`,
+        ev: 1,
+      },
+      { ec: "Solver", ea: "Solution length", el: `${solutionLength}`, ev: 1 },
+      { ec: "Solver", ea: "Matrix size", el: `${matrixSize}`, ev: 1 },
+    ];
+
     return fetch(`/api/eventview`, {
       method: "POST",
       body: JSON.stringify({ dp: window.location.pathname, evs }),
@@ -320,15 +330,19 @@ class IndexContainer extends React.Component<{}, IndexContainerState> {
       const solution = solve(matrix, sequences, bufferSize, {
         useSequencePriorityOrder,
       });
-      console.log("solution", solution);
+      console.log("solution", {
+        solution,
+        useSequencePriorityOrder,
+        sequences,
+      });
 
-      sendStats({
+      sendStats(() => ({
         bufferSize: bufferSize,
         matrixSize: matrix[0].length,
         sequenceCount: sequences.length,
-        sequencesMatched: solution.match.includes.length,
-        solutionLength: solution.match.result.length,
-      });
+        sequencesMatched: (solution && solution.match.includes.length) || 0,
+        solutionLength: (solution && solution.match.result.length) || 0,
+      }));
 
       this.setState({
         solution,
