@@ -267,12 +267,26 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
           Buffer size may be too small. Note that the solver currently allows
           only one wasted digit; at the first digit.
         </p>
+        <p>
+          <Sb>Change sequence priority by dragging</Sb>
+        </p>
+        <SortableSequenceList
+          axis="y"
+          lockAxis="y"
+          helperClass={cz(
+            styles["sortable-item"],
+            styles["sortable-item__dragged"]
+          )}
+          items={sequenceItems}
+          onSortEnd={handleSortEnd}
+        />
       </div>
     );
   }
 
   const { match, solution } = result;
   const { includes, result: optimalSequence } = match;
+
   return (
     <div className={styles.body}>
       {allSequencesLen !== includes.length && (
@@ -285,21 +299,19 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
             Note that the solver currently allows only one wasted digit; at the
             first digit.
           </p>
-          <div>
-            <p>
-              <Sb>Change sequence priority by dragging</Sb>
-            </p>
-            <SortableSequenceList
-              axis="y"
-              lockAxis="y"
-              helperClass={cz(
-                styles["sortable-item"],
-                styles["sortable-item__dragged"]
-              )}
-              items={sequenceItems}
-              onSortEnd={handleSortEnd}
-            />
-          </div>
+          <p>
+            <Sb>Change sequence priority by dragging</Sb>
+          </p>
+          <SortableSequenceList
+            axis="y"
+            lockAxis="y"
+            helperClass={cz(
+              styles["sortable-item"],
+              styles["sortable-item__dragged"]
+            )}
+            items={sequenceItems}
+            onSortEnd={handleSortEnd}
+          />
         </>
       )}
       <p>
