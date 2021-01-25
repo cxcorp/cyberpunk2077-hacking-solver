@@ -67,8 +67,8 @@ export const sendPrioritizationStats = async (
       fmtArr
     );
 
-    const originalSequencesHasDuplicates =
-      originalSequences.length !== uniq(originalSequences).length;
+    const originalSequencesDuplicates =
+      originalSequences.length - uniq(originalSequences).length;
 
     const priorityOrder = prioritizedSequences.map((prioritySeq, index) => {
       const indexInOriginalOrder = originalSequences.findIndex(
@@ -94,9 +94,9 @@ export const sendPrioritizationStats = async (
     );
     evs.unshift({
       ec: "Sequence Priority",
-      ea: "Had duplicate sequences",
-      el: `${originalSequencesHasDuplicates ? 1 : 0}`,
-      ev: originalSequencesHasDuplicates ? 1 : 0,
+      ea: "Duplicate sequences",
+      el: `${originalSequencesDuplicates}`,
+      ev: originalSequencesDuplicates,
     });
 
     return fetch(`/api/eventview`, {
