@@ -55,6 +55,7 @@ const PrivacyPage = () => (
                     Solution success (how many sequences were entered and how
                     many could be solved for)
                   </li>
+                  <li>Sequence prioritization order</li>
                 </ul>
               </p>
               <p>

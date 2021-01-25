@@ -24,6 +24,7 @@ import SolutionModal from "../components/SolutionModal";
 import Button from "../components/Button";
 
 import { parseMatrix } from "../util";
+import { sendPrioritizationStats, sendSolverStats } from "../lib/stats";
 import { SolverResult } from "../lib/bruter";
 import styles from "../styles/Index.module.scss";
 
@@ -65,53 +66,6 @@ const HackButton: FC<{
       </Button>
     </div>
   );
-};
-
-const sendStats = async (
-  collector: () => {
-    bufferSize: number;
-    sequenceCount: number;
-    sequencesMatched: number;
-    solutionLength: number;
-    matrixSize: number;
-  }
-) => {
-  try {
-    if (process.env.NEXT_PUBLIC_UA_ENABLED !== "true") {
-      console.log("ne");
-      console.log(process.env.NEXT_PUBLIC_UA_ENABLED);
-      return null;
-    } //ec, ea, el, ev
-
-    const {
-      bufferSize,
-      sequenceCount,
-      sequencesMatched,
-      solutionLength,
-      matrixSize,
-    } = collector();
-
-    const evs = [
-      { ec: "Solver", ea: "Buffer size", el: `${bufferSize}`, ev: 1 },
-      { ec: "Solver", ea: "Sequence count", el: `${sequenceCount}`, ev: 1 },
-      {
-        ec: "Solver",
-        ea: "Sequences matched",
-        el: `${sequencesMatched}`,
-        ev: 1,
-      },
-      { ec: "Solver", ea: "Solution length", el: `${solutionLength}`, ev: 1 },
-      { ec: "Solver", ea: "Matrix size", el: `${matrixSize}`, ev: 1 },
-    ];
-
-    return fetch(`/api/eventview`, {
-      method: "POST",
-      body: JSON.stringify({ dp: window.location.pathname, evs }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  } catch (e) {}
 };
 
 const Separator = ({ className }: { className?: string }) => (
@@ -291,6 +245,7 @@ interface IndexContainerState {
   allSequencesLen: number;
   solution: SolverResult | null;
   modalVisible: boolean;
+  unprioritizedSequencesText: string;
 }
 
 class IndexContainer extends React.Component<{}, IndexContainerState> {
@@ -303,6 +258,7 @@ class IndexContainer extends React.Component<{}, IndexContainerState> {
     allSequencesLen: 0,
     solution: null,
     modalVisible: false,
+    unprioritizedSequencesText: "",
   };
 
   setMatrixText = (text: string) => this.setState({ matrixText: text });
@@ -316,42 +272,69 @@ class IndexContainer extends React.Component<{}, IndexContainerState> {
   setSolution = (solution: SolverResult | null) => this.setState({ solution });
   setModalVisible = (visible: boolean) =>
     this.setState({ modalVisible: visible });
+  setUnprioritizedSequencesText = (text: string) =>
+    this.setState({ unprioritizedSequencesText: text });
 
   runSolver = (useSequencePriorityOrder?: boolean) => {
-    const { matrixText, sequencesText, bufferSize } = this.state;
-    this.setState({ solverRunning: true });
+    const {
+      matrixText,
+      sequencesText,
+      bufferSize,
+      unprioritizedSequencesText,
+    } = this.state;
 
-    setTimeout(async () => {
-      const solve = (await import("../lib/bruter")).default;
-      console.log("running");
+    const scheduleSolve = () =>
+      setTimeout(async () => {
+        const solve = (await import("../lib/bruter")).default;
+        console.log("running");
 
-      const matrix = parseMatrix(matrixText);
-      const sequences = parseMatrix(sequencesText);
-      const solution = solve(matrix, sequences, bufferSize, {
-        useSequencePriorityOrder,
-      });
-      console.log("solution", {
-        solution,
-        useSequencePriorityOrder,
-        sequences,
-      });
+        const matrix = parseMatrix(matrixText);
+        const sequences = parseMatrix(sequencesText);
+        const solution = solve(matrix, sequences, bufferSize, {
+          useSequencePriorityOrder,
+        });
+        console.log("solution", {
+          solution,
+          useSequencePriorityOrder,
+          sequencesText,
+          unprioritizedSequencesText,
+        });
 
-      sendStats(() => ({
-        bufferSize: bufferSize,
-        matrixSize: matrix[0].length,
-        sequenceCount: sequences.length,
-        sequencesMatched: (solution && solution.match.includes.length) || 0,
-        solutionLength: (solution && solution.match.result.length) || 0,
-      }));
+        if (useSequencePriorityOrder) {
+          sendPrioritizationStats(() => ({
+            originalSequenceText: unprioritizedSequencesText,
+            prioritizedSequenceText: sequencesText,
+          }));
+        }
 
-      this.setState({
-        solution,
-        allSequencesLen: sequences.length,
-        codeMatrix: matrix,
-        modalVisible: true,
-        solverRunning: false,
-      });
-    }, 1);
+        sendSolverStats(() => ({
+          bufferSize: bufferSize,
+          matrixSize: matrix[0].length,
+          sequenceCount: sequences.length,
+          sequencesMatched: (solution && solution.match.includes.length) || 0,
+          solutionLength: (solution && solution.match.result.length) || 0,
+        }));
+
+        this.setState({
+          solution,
+          allSequencesLen: sequences.length,
+          codeMatrix: matrix,
+          modalVisible: true,
+          solverRunning: false,
+        });
+      }, 1);
+
+    if (useSequencePriorityOrder) {
+      this.setState({ solverRunning: true }, scheduleSolve);
+    } else {
+      this.setState(
+        {
+          solverRunning: true,
+          unprioritizedSequencesText: sequencesText,
+        },
+        scheduleSolve
+      );
+    }
   };
 
   render() {
@@ -364,6 +347,7 @@ class IndexContainer extends React.Component<{}, IndexContainerState> {
       allSequencesLen,
       solution,
       modalVisible,
+      unprioritizedSequencesText,
     } = this.state;
 
     const ctx: AppContextType = {
@@ -375,6 +359,8 @@ class IndexContainer extends React.Component<{}, IndexContainerState> {
       onBufferSizeChanged: this.setBufferSize,
       solverRunning,
       onRunSolver: this.runSolver,
+      unprioritizedSequencesText,
+      setUnprioritizedSequencesText: this.setUnprioritizedSequencesText,
     };
 
     return (

@@ -5,6 +5,7 @@ interface AppState {
   sequencesText: string;
   bufferSize: number;
   solverRunning: boolean;
+  unprioritizedSequencesText: string;
 }
 
 interface AppCallbacks {
@@ -13,6 +14,7 @@ interface AppCallbacks {
   onSequencesChanged: (str: string, cb?: () => void) => void;
   onBufferSizeChanged: (size: number) => void;
   onRunSolver: (useSequencePriorityOrder?: boolean) => void;
+  setUnprioritizedSequencesText: (text: string) => void;
 }
 
 export interface AppContextType extends AppState, AppCallbacks {}
@@ -29,6 +31,8 @@ export const AppContext = React.createContext<AppContextType>({
   onBufferSizeChanged: noOp,
   solverRunning: false,
   onRunSolver: noOp,
+  unprioritizedSequencesText: "",
+  setUnprioritizedSequencesText: noOp
 });
 
 export const useAppContext = () => useContext(AppContext);
