@@ -18,7 +18,7 @@ test('removeDuplicates returns de-duped OptimizedSequence', () => {
     ...getRootsAllValues(roots),
   ];
 
-  expect(values.length).toEqual(99);
+  expect(values.length).toEqual(89);
   expect(removeDuplicates(values).length).toEqual(17);
 });
 
