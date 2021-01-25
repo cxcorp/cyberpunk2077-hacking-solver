@@ -1,13 +1,37 @@
-import React, { FC, useRef, useEffect } from "react";
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useRef,
+  useEffect,
+  useMemo,
+} from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import debounce from "lodash/debounce";
+import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import cz from "classnames";
+
+import { useAppContext } from "../components/AppContext";
+import { GridVerticalIcon } from "../components/Icons";
+import { parseMatrix, arrayMove } from "../util";
 import { Coord, SolverResult } from "../lib/bruter";
 import styles from "../styles/SolutionModal.module.scss";
 
-const Sb: FC = ({ children }) => {
-  return <span className={styles.semibold}>{children}</span>;
+interface SolutionContextType {
+  result: SolverResult | null;
+}
+const SolutionContext = React.createContext<SolutionContextType>({
+  result: null,
+});
+
+const Sb: FC<{ className?: string }> = ({ children, className }) => {
+  return <span className={cz(styles.semibold, className)}>{children}</span>;
 };
+
+const Code: FC = ({ children }) => (
+  <span className={styles.code}>{children}</span>
+);
 
 interface SolutionRendererProps {
   codeMatrix: number[][];
@@ -140,6 +164,7 @@ const SolutionRenderer = ({ codeMatrix, solution }: SolutionRendererProps) => {
   const canvasRef = useRef<HTMLCanvasElement>();
 
   useEffect(() => {
+    console.log("rendering solution");
     renderSolution(parentRef.current, canvasRef.current, codeMatrix, solution);
 
     const debounced = debounce(() => {
@@ -171,10 +196,70 @@ interface BodyProps {
   codeMatrix: number[][];
 }
 
+const DragHandle = () => (
+  <GridVerticalIcon className={styles["sortable-item__draghandle"]} />
+);
+
+const SortableSequenceItem = SortableElement(({ displayIndex, value }) => {
+  const { result } = useContext(SolutionContext);
+  const isMatched =
+    result &&
+    result.match.includes.some(
+      (arr) => arr.map((n) => n.toString(16).toUpperCase()).join(" ") === value
+    );
+
+  return (
+    <li className={styles["sortable-item"]}>
+      <DragHandle />
+      <Sb className="mr-2">{displayIndex + 1}.</Sb> {value}
+      {isMatched && (
+        <span className={styles["sortable-item__success-indicator"]}>
+          MATCHED
+        </span>
+      )}
+    </li>
+  );
+});
+
+const SortableSequenceList = SortableContainer(({ items }) => {
+  return (
+    <ul className={styles["sortable-list"]}>
+      {items.map((value, index) => (
+        <SortableSequenceItem
+          key={`${value}-${index}`}
+          index={index}
+          displayIndex={index}
+          value={value}
+        />
+      ))}
+    </ul>
+  );
+});
+
 const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
+  const { sequencesText, onSequencesChanged, onRunSolver } = useAppContext();
+
+  const sequenceItems = useMemo(
+    () =>
+      parseMatrix(sequencesText).map((nr) =>
+        nr.map((n) => n.toString(16).toUpperCase()).join(" ")
+      ),
+    [sequencesText]
+  );
+
+  const handleSortEnd = useCallback(
+    ({ oldIndex, newIndex }) => {
+      const newText = arrayMove(sequenceItems, oldIndex, newIndex).join("\n");
+      onSequencesChanged(newText, () => {
+        onRunSolver(true);
+      });
+    },
+    [sequenceItems]
+  );
+
   if (result === null) {
     return (
-      <>
+      <div className={styles.body}>
         <p className={styles.note}>
           <Sb>No solutions were discovered.</Sb>
         </p>
@@ -182,14 +267,14 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
           Buffer size may be too small. Note that the solver currently allows
           only one wasted digit; at the first digit.
         </p>
-      </>
+      </div>
     );
   }
 
   const { match, solution } = result;
   const { includes, result: optimalSequence } = match;
   return (
-    <>
+    <div className={styles.body}>
       {allSequencesLen !== includes.length && (
         <>
           <p className={styles.note}>
@@ -201,33 +286,32 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
             first digit.
           </p>
           <div>
-            <p className="mb-0">
-              <Sb>
-                Matched {includes.length}/{allSequencesLen} sequences:
-              </Sb>
+            <p>
+              <Sb>Change sequence priority by dragging</Sb>
             </p>
-            <ul>
-              {includes.map((inc) => {
-                const str = inc
-                  .map((n) => n.toString(16).toUpperCase())
-                  .join(" ");
-                return <li key={str}>{str}</li>;
-              })}
-            </ul>
+            <SortableSequenceList
+              axis="y"
+              lockAxis="y"
+              helperClass={cz(
+                styles["sortable-item"],
+                styles["sortable-item__dragged"]
+              )}
+              items={sequenceItems}
+              onSortEnd={handleSortEnd}
+            />
           </div>
         </>
       )}
       <p>
-        <Sb>Optimal sequence: </Sb>
-        {optimalSequence.map((n) => n.toString(16).toUpperCase()).join(" ")}
+        <Sb className="mr-2">Optimal sequence: </Sb>
+        <Code>
+          {optimalSequence.map((n) => n.toString(16).toUpperCase()).join(" ")}
+        </Code>
       </p>
       <div>
-        <p>
-          <Sb>Solution:</Sb>
-        </p>
         <SolutionRenderer codeMatrix={codeMatrix} solution={solution} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -248,23 +332,27 @@ export default function SolutionModal({
   allSequencesLen,
   codeMatrix,
 }: SolutionModalProps) {
+  const ctx = useMemo(() => ({ result }), [result]);
+
   return (
-    <Modal show={show} onHide={onHide} size="lg">
-      <Modal.Header closeButton>
-        <Modal.Title>SOLUTION</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Body
-          result={result}
-          allSequencesLen={allSequencesLen}
-          codeMatrix={codeMatrix}
-        />
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          CLOSE
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <SolutionContext.Provider value={ctx}>
+      <Modal show={show} onHide={onHide} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>SOLUTION</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Body
+            result={result}
+            allSequencesLen={allSequencesLen}
+            codeMatrix={codeMatrix}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onHide}>
+            CLOSE
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </SolutionContext.Provider>
   );
 }

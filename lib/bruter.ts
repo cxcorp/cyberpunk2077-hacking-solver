@@ -66,7 +66,12 @@ function maxBy<T>(arr: T[], fn: (t: T) => number): number | undefined {
 export default function runSolver(
   matrix: number[][],
   sequences: number[][],
-  bufferSize: number
+  bufferSize: number,
+  {
+    useSequencePriorityOrder,
+  }: {
+    useSequencePriorityOrder?: boolean;
+  }
 ): SolverResult | null {
   const roots = optimizeSequences(sequences);
   const values: OptimizedSequence[] = [
@@ -84,10 +89,88 @@ export default function runSolver(
   );
   const dedupedSeqs = removeDuplicates(seqsThatFitInBuffer);
 
-  const maxIncludes = maxBy(dedupedSeqs, (r) => r.includes.length);
+  const solver = useSequencePriorityOrder
+    ? runSolverPrioritized
+    : runSolverUnprioritized;
+  return solver(matrix, bufferSize, dedupedSeqs, sequences);
+}
+
+const containsSequence = (sequences: number[][], targetSequence: number[]) =>
+  sequences.some((sequence) => {
+    if (sequence.length !== targetSequence.length) {
+      return false;
+    }
+    for (let i = 0; i < sequence.length; i++) {
+      if (sequence[i] !== targetSequence[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+const containsAllSequences = (
+  candidateSequences: number[][],
+  requiredSequences: number[][]
+) =>
+  requiredSequences.every((requiredSequence) =>
+    containsSequence(candidateSequences, requiredSequence)
+  );
+
+function runSolverPrioritized(
+  matrix: number[][],
+  bufferSize: number,
+  optimalSequences: OptimizedSequence[],
+  originalSequences: number[][]
+): SolverResult | null {
+  // Find a solution so that we prioritize the original sequences in order of appearance.
+  // Try to find a solution for all original sequences, removing the last
+  // sequence until a match is found.
+
+  let requiredSequences = [...originalSequences];
+  while (requiredSequences.length > 0) {
+    const matches = optimalSequences.filter((optimalSeq) =>
+      containsAllSequences(optimalSeq.includes, requiredSequences)
+    );
+
+    const solutionsByDistance = matches
+      .flatMap((match) => {
+        const pattern = match.result;
+        const solutions = brute(pattern, matrix, true);
+        return solutions.map((solution) => ({ match, solution }));
+      })
+      // it's possible that a sequence was found which includes skips
+      // filter out solutions that are longer than the buffer size!
+      .filter((seq) => seq.solution.length <= bufferSize)
+      .map((s) => ({ ...s, routeWeight: calculateRouteWeight(s.solution) }))
+      .sort(({ routeWeight: a }, { routeWeight: b }) => {
+        const aScore =
+          a.distance + (a.intersectCoeff > 0 ? 2 + a.intersectCoeff : 0);
+        const bScore =
+          b.distance + (b.intersectCoeff > 0 ? 2 + b.intersectCoeff : 0);
+        return aScore - bScore;
+      });
+
+    if (solutionsByDistance.length > 0) {
+      const shortest = solutionsByDistance[0];
+      return shortest;
+    }
+
+    requiredSequences.pop();
+  }
+
+  return null;
+}
+
+function runSolverUnprioritized(
+  matrix: number[][],
+  bufferSize: number,
+  optimalSequences: OptimizedSequence[]
+): SolverResult | null {
+  // Find a solution with most sequences matched
+  const maxIncludes = maxBy(optimalSequences, (r) => r.includes.length);
 
   for (let includeCount = maxIncludes!; includeCount > 0; includeCount--) {
-    const matches = dedupedSeqs.filter(
+    const matches = optimalSequences.filter(
       (r) => r.includes.length === includeCount
     );
 

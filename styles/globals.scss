@@ -76,8 +76,7 @@ body {
   );
 
   // calibri
-  font-family: "Rajdhani", Calibri, Candara, Segoe, Segoe UI, Optima, Arial,
-    sans-serif;
+  @include body-font;
   font-weight: 400;
 
   font-size: 13px;

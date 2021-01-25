@@ -6,6 +6,12 @@ $color-highlight: #d0ed57;
 $color-bg: #121018;
 $color-lighter-bg: #292c3a;
 $color-error: #f55956;
+$color-success: #56f5a6;
+
+@mixin body-font {
+  font-family: "Rajdhani", Calibri, Candara, Segoe, Segoe UI, Optima, Arial,
+    sans-serif;
+}
 
 @mixin code-font {
   font-family: "Rajdhani Mod", Meno, Consolas, monospace;

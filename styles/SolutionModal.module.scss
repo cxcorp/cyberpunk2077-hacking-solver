@@ -1,7 +1,53 @@
+@import "./common";
+
 .semibold {
   font-weight: 600;
 }
 
 .note {
   color: #5ee9f2;
+}
+
+.body {
+  font-size: 1.2rem;
+}
+
+.code {
+  @include code-font;
+}
+
+.sortable-item {
+  @include code-font;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  list-style: none;
+  cursor: move;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+  border: 1px solid $color-highlight;
+
+  &__draghandle {
+    height: 1.5rem;
+    color: #ccc;
+    margin-right: 0.5rem;
+  }
+
+  &__success-indicator {
+    @include body-font;
+    color: $color-success;
+    margin-left: auto;
+  }
+}
+
+.sortable-list {
+  list-style: none;
+  padding-left: 0;
+  //border: 1px solid $color-highlight;
+}
+
+.sortable-item__dragged {
+  z-index: 2000;
+  font-size: 1.2rem;
+  color: $color-highlight;
 }
