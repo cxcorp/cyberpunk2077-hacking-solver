@@ -87,6 +87,11 @@ const renderSolution = (
     break;
   }
   const square = byteSize.width;
+  canvas.width = square * 2 * codeMatrix.length + square;
+  canvas.height = canvas.width;
+  ctx.fillStyle = "#d0ed57";
+  ctx.textBaseline = "top";
+  ctx.font = `500 ${fontSize}rem "Rajdhani Mod", Meno, Consolas, monospace`;
 
   for (let y = 0; y < codeMatrix.length; y++) {
     for (let x = 0; x < codeMatrix[0].length; x++) {
@@ -261,11 +266,7 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
     return (
       <div className={styles.body}>
         <p className={styles.note}>
-          <Sb>No solutions were discovered.</Sb>
-        </p>
-        <p className={styles.note}>
-          Buffer size may be too small. Note that the solver currently allows
-          only one wasted digit; at the first digit.
+          <Sb className={styles.title}>No solutions found!</Sb>
         </p>
         <p>
           <Sb>Change sequence priority by dragging</Sb>
@@ -280,6 +281,10 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
           items={sequenceItems}
           onSortEnd={handleSortEnd}
         />
+        <p className={styles.note}>
+          Buffer size may be too small. Note that the solver currently allows
+          only one wasted digit; at the first digit.
+        </p>
       </div>
     );
   }
@@ -287,33 +292,50 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
   const { match, solution } = result;
   const { includes, result: optimalSequence } = match;
 
+  if (allSequencesLen !== includes.length) {
+    return (
+      <div className={styles.body}>
+        <p className={styles.note}>
+          <Sb className={styles.title}>Partial solution found!</Sb>
+        </p>
+        <p>
+          <Sb>Change sequence priority by dragging</Sb>
+        </p>
+        <SortableSequenceList
+          axis="y"
+          lockAxis="y"
+          helperClass={cz(
+            styles["sortable-item"],
+            styles["sortable-item__dragged"]
+          )}
+          items={sequenceItems}
+          onSortEnd={handleSortEnd}
+        />
+
+        <p>
+          <Sb className="mr-2">Optimal sequence: </Sb>
+          <Code>
+            {optimalSequence.map((n) => n.toString(16).toUpperCase()).join(" ")}
+          </Code>
+        </p>
+        <div>
+          <SolutionRenderer codeMatrix={codeMatrix} solution={solution} />
+        </div>
+
+        <p className={styles.note}>
+          Not all sequences could be included - either buffer is too small or no
+          solution exists which includes all sequences. Note that the solver
+          currently allows only one wasted digit; at the first digit.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.body}>
-      {allSequencesLen !== includes.length && (
-        <>
-          <p className={styles.note}>
-            <Sb>
-              Not all sequences could be included - either buffer is too small
-              or no solution exists which includes all sequences.
-            </Sb>{" "}
-            Note that the solver currently allows only one wasted digit; at the
-            first digit.
-          </p>
-          <p>
-            <Sb>Change sequence priority by dragging</Sb>
-          </p>
-          <SortableSequenceList
-            axis="y"
-            lockAxis="y"
-            helperClass={cz(
-              styles["sortable-item"],
-              styles["sortable-item__dragged"]
-            )}
-            items={sequenceItems}
-            onSortEnd={handleSortEnd}
-          />
-        </>
-      )}
+      <p className={styles.note}>
+        <Sb className={styles.title}>Full solution found!</Sb>
+      </p>
       <p>
         <Sb className="mr-2">Optimal sequence: </Sb>
         <Code>

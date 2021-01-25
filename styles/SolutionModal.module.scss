@@ -1,7 +1,12 @@
+@use "sass:color";
 @import "./common";
 
 .semibold {
   font-weight: 600;
+}
+
+.title {
+  font-size: 1.2em;
 }
 
 .note {
@@ -38,6 +43,7 @@
     @include body-font;
     color: $color-success;
     margin-left: auto;
+    text-shadow: 0 0 5px color.adjust($color-success, $lightness: -35%);
   }
 }
 
