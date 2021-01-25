@@ -80,7 +80,9 @@ test('runSolver returns expected solution', () => {
   const sequences = [[28, 255],[28, 255, 233],[122, 28, 255, 233]];
   const bufferSize = 6;
 
-  const solverResult = runSolver(matrix, sequences, bufferSize);
+  const solverResult = runSolver(matrix, sequences, bufferSize, {
+    useSequencePriorityOrder: false
+  });
 
   expect(solverResult.match.result[0]).toEqual(28);
 });
