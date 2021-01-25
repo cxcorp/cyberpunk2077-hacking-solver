@@ -26,6 +26,7 @@
   cursor: move;
   padding: 0.5rem 1rem 0.5rem 0.5rem;
   border: 1px solid $color-highlight;
+  background: $color-bg;
 
   &__draghandle {
     height: 1.5rem;
