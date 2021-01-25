@@ -13,20 +13,6 @@ const grabIp = (req: NextApiRequest): string | undefined =>
     ? req.headers["x-real-ip"][0]
     : req.headers["x-real-ip"];
 
-const anonymizeIp = (ip?: string) => {
-  if (!ip || ip.includes(":")) {
-    // ipv6?
-    return undefined;
-  }
-
-  const octets = ip.split(".");
-  if (octets.length !== 4) {
-    return undefined;
-  }
-  octets[3] = "0";
-  return octets.join(".");
-};
-
 const getCid = (ip?: string, ua?: string): string => {
   const shasum = crypto.createHash("sha1");
   shasum.update(ip || "0.0.0.0");
@@ -44,7 +30,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const { dp = "/", evs } = req.body;
-  const ip = anonymizeIp(grabIp(req));
+  const ip = grabIp(req);
 
   const queries = evs.map((ev) =>
     querystring.stringify({
@@ -56,6 +42,8 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       dh: req.headers.host,
       dp,
       ua: req.headers["user-agent"],
+      // anonymize IP at ingest point
+      aip: 1,
       ...(ip ? { uip: ip } : {}),
     })
   );
