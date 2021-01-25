@@ -1,9 +1,10 @@
 # cyberpunk-2077-hacking-solver
 
-A web-based solver for the Cyberpunk 2077 Breach Protocol hacking minigame.
+A web-based solver for the Cyberpunk 2077 Breach Protocol hacking minigame. [**Try it online.**](https://cyberpunk-hacker.com/)
+
+![](https://raw.githubusercontent.com/cxcorp/cyberpunk2077-hacking-solver/main/doc-images/screencap.gif)
 
 Follow my progress on an automated code matrix reader (client-side JS only - OpenCV.js & Tesseract.js) here: https://github.com/cxcorp/cyberpunk2077-hacker-camera-proto
-
 
 ## Development
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
