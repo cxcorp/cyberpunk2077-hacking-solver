@@ -77,7 +77,8 @@ function match2(
       output.push({ shift: shiftRight, dir: ShiftDir.Right });
     }
   }
-  for (let shiftLeft = 0; shiftLeft < candidate.length; shiftLeft++) {
+  // start from 1 since offset of 0 was already checked above
+  for (let shiftLeft = 1; shiftLeft < candidate.length; shiftLeft++) {
     if (doesMatchLeft(shiftLeft, candidate, target)) {
       output.push({ shift: shiftLeft, dir: ShiftDir.Left });
     }
