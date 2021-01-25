@@ -96,7 +96,7 @@ export const sendPrioritizationStats = async (
       ec: "Sequence Priority",
       ea: "Had duplicate sequences",
       el: `${originalSequencesHasDuplicates ? 1 : 0}`,
-      ev: 1,
+      ev: originalSequencesHasDuplicates ? 1 : 0,
     });
 
     return fetch(`/api/eventview`, {
