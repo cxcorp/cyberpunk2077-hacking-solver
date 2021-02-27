@@ -19,7 +19,7 @@
     "classnames": "^2.2.6",
     "jest": "^26.0.19",
     "lodash": "^4.17.20",
-    "next": "10.0.3",
+    "next": "10.0.7",
     "node-fetch": "^2.6.1",
     "react": "17.0.1",
     "react-bootstrap": "^1.4.0",
