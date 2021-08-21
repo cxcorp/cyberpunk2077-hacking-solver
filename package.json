@@ -28,6 +28,7 @@
     "sass": "^1.30.0"
   },
   "devDependencies": {
+    "@jest/globals": "^27.0.6",
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.2",
     "@types/classnames": "^2.2.11",
