@@ -29,8 +29,8 @@ const SequencesTextBox = () => {
   );
 
   const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onSequencesChanged(e.currentTarget.value);
+    (value: string) => {
+      onSequencesChanged(value);
     },
     [onSequencesChanged]
   );
