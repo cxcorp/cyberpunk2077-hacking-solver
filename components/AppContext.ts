@@ -32,7 +32,7 @@ export const AppContext = React.createContext<AppContextType>({
   solverRunning: false,
   onRunSolver: noOp,
   unprioritizedSequencesText: "",
-  setUnprioritizedSequencesText: noOp
+  setUnprioritizedSequencesText: noOp,
 });
 
 export const useAppContext = () => useContext(AppContext);

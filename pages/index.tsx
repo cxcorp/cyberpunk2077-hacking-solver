@@ -125,9 +125,10 @@ const Index = ({
     [onRunSolver]
   );
 
-  const onModalHide = useCallback(() => setModalVisible(false), [
-    setModalVisible,
-  ]);
+  const onModalHide = useCallback(
+    () => setModalVisible(false),
+    [setModalVisible]
+  );
 
   const [hasJS, setHasJS] = useState(false);
   useEffect(() => {
