@@ -29,8 +29,8 @@ const CodeMatrixTextBox = () => {
   }, []);
 
   const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onMatrixChanged(e.currentTarget.value);
+    (value: string) => {
+      onMatrixChanged(value);
     },
     [onMatrixChanged]
   );
