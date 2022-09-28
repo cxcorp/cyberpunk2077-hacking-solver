@@ -102,6 +102,10 @@ const processScreenshot = (imageData: ImageData) => {
     const right = Math.floor(width * 0.6);
     const left = 0;
 
+    if (left < 0 || top < 0 || width < 0 || height < 0) {
+      throw new Error("invalid image (too wide!)");
+    }
+
     const croppedRoi = image.roi({
       x: left,
       y: top,
