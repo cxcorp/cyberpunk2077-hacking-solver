@@ -9,7 +9,7 @@ console.log("cv.worker.ts");
 
 export default {};
 
-const CV_LOAD_WAIT_TIME = 5 * 1000;
+const CV_LOAD_WAIT_TIME = 30 * 1000;
 
 const hasOpenCv = () => !!cv.Mat;
 
