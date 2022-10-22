@@ -207,7 +207,7 @@ const processScreenshot = (imageData: ImageData) => {
         cv.rectangle1(grayMask, rect, new cv.Scalar(0, 0, 255, 255));
       });
       const outImageData = toImageData(grayMask); //imageDataFromMat(cropped);
-      postAction("process_screenshot_success", outImageData);
+      postAction("process_screenshot_success", { comboImage: outImageData });
 
       setTimeout(() => {
         throw new Error("Gray strip could not be found in image!");
