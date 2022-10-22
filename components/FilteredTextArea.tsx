@@ -18,7 +18,6 @@ const autocompletions = ["1C", "55", "7A", "BD", "E9", "FF"].reduce(
   },
   new Map<string, string>()
 );
-console.log(autocompletions);
 
 const isAutocompletableKey = (key: string) => {
   return autocompletions.has(key);
