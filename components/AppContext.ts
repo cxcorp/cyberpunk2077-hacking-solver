@@ -13,7 +13,10 @@ interface AppCallbacks {
   // need cb for SolutionModal
   onSequencesChanged: (str: string, cb?: () => void) => void;
   onBufferSizeChanged: (size: number) => void;
-  onRunSolver: (useSequencePriorityOrder?: boolean) => void;
+  onRunSolver: (
+    useSequencePriorityOrder?: boolean,
+    overrides?: { sequencesText?: string; matrixText?: string }
+  ) => void;
   setUnprioritizedSequencesText: (text: string) => void;
 }
 

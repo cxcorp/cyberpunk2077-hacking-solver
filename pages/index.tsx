@@ -117,6 +117,11 @@ const Index = ({
   const cvWorkerRef = useRef<CvService.CvWorker>(null);
   const ocrWorkerRef = useRef<Tesseract.Worker>(null);
 
+  const [ocrStatus, setOcrStatus] = useState<{
+    progress: number;
+    text: string;
+  }>();
+
   useEffect(() => {
     const uniqChars = (arr) => [...new Set(arr.join("").split(""))];
     const getOcrWhitelist = () =>
@@ -135,6 +140,25 @@ const Index = ({
         gzip: true,
         logger: (msg) => {
           console.log("[tesseract] ", msg);
+          if (msg?.userJobId?.startsWith("code_matrix-")) {
+            const matrixProgress = msg.progress;
+            // 50->80
+            const progress = 50 + (80 - 50) * matrixProgress;
+            console.log("codematrix", progress);
+            setOcrStatus({
+              progress,
+              text: "Reading code matrix...",
+            });
+          } else if (msg?.userJobId?.startsWith("sequences-")) {
+            const sequenceProgress = msg.progress;
+            // 80->99
+            const progress = 80 + (99 - 80) * sequenceProgress;
+            console.log("sequence", progress);
+            setOcrStatus({
+              progress,
+              text: "Reading sequences...",
+            });
+          }
         },
         errorHandler: (err) => {
           console.error("[tesseract] ", err);
@@ -194,6 +218,10 @@ const Index = ({
 
     async function processImage(imageData: ImageData) {
       console.log("processing screenshot");
+      setOcrStatus({
+        text: "Processing screenshot...",
+        progress: 20,
+      });
       const output = await cvWorkerRef.current.processScreenshot(imageData);
 
       const ctx = outputCanvasRef.current.getContext("2d");
@@ -203,11 +231,17 @@ const Index = ({
         ctx.putImageData(img, 0, 0);
       };
 
+      setOcrStatus({
+        text: "Running OCR...",
+        progress: 60,
+      });
       console.log("running OCR");
       console.log("OCRing code matrix");
       putImage(output.codeMatrix);
       const codeMatrix = await ocrWorkerRef.current.recognize(
-        outputCanvasRef.current
+        outputCanvasRef.current,
+        undefined,
+        "code_matrix-" + Math.random().toString(36).substr(2, 5)
       );
       console.log("%cCODE MATRIX OCR RESULT:", "color:#00ff00");
       console.log(codeMatrix.data);
@@ -215,12 +249,26 @@ const Index = ({
       console.log("OCRing sequences");
       putImage(output.sequences);
       const sequences = await ocrWorkerRef.current.recognize(
-        outputCanvasRef.current
+        outputCanvasRef.current,
+        undefined,
+        "sequences-" + Math.random().toString(36).substr(2, 5)
       );
       console.log("%cSEQUENCES OCR RESULT:", "color:#00ff00");
       console.log(sequences.data);
 
+      setOcrStatus({
+        progress: 100,
+        text: "Flushing...",
+      });
       putImage(output.comboImage);
+
+      onMatrixChanged(codeMatrix.data.text);
+      onSequencesChanged(sequences.data.text);
+      setOcrStatus(() => undefined);
+      onRunSolver(undefined, {
+        sequencesText: sequences.data.text,
+        matrixText: codeMatrix.data.text,
+      });
     }
 
     async function handlePaste(e: ClipboardEvent) {
@@ -243,10 +291,17 @@ const Index = ({
         }
 
         console.log("reading clipboard file");
+        setOcrStatus({
+          text: "Reading image...",
+          progress: 0,
+        });
         const file = item.getAsFile();
         console.log("getting file image data");
         const imageData = await getFileImageData(file);
         setTimeout(() => processImage(imageData), 0);
+        onMatrixChanged("");
+        onSequencesChanged("");
+        setModalVisible(false);
 
         e.preventDefault();
         return;
@@ -354,6 +409,17 @@ const Index = ({
               <HackButton disabled={solverRunning || inputsEmpty} />
             </Col>
           </Row>
+
+          <Row>
+            <Col lg={8}>
+              {ocrStatus && (
+                <>
+                  <p>{ocrStatus.text}</p>
+                  <progress max="100" value={ocrStatus.progress} />
+                </>
+              )}
+            </Col>
+          </Row>
         </form>
         <Separator className="mt-5" />
 
@@ -430,13 +496,13 @@ class IndexContainer extends React.Component<{}, IndexContainerState> {
   setUnprioritizedSequencesText = (text: string) =>
     this.setState({ unprioritizedSequencesText: text });
 
-  runSolver = (useSequencePriorityOrder?: boolean) => {
-    const {
-      matrixText,
-      sequencesText,
-      bufferSize,
-      unprioritizedSequencesText,
-    } = this.state;
+  runSolver = (
+    useSequencePriorityOrder?: boolean,
+    overrides?: { sequencesText?: string; matrixText?: string }
+  ) => {
+    const { bufferSize, unprioritizedSequencesText } = this.state;
+    const sequencesText = overrides?.sequencesText || this.state.sequencesText;
+    const matrixText = overrides?.matrixText || this.state.matrixText;
 
     const scheduleSolve = () =>
       setTimeout(async () => {
