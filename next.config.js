@@ -11,7 +11,7 @@ const withWebWorkers = (nextConfig) => {
         use: {
           loader: "worker-loader",
           options: {
-            filename: "static/static/[name].[hash].js",
+            filename: "static/static/[name].[fullhash].js",
             publicPath: "/_next/",
             esModule: false,
           },
