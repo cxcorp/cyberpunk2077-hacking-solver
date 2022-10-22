@@ -35,7 +35,7 @@ const waitForOpenCv = (cb: (err: null | Error) => void) => {
 };
 
 const handleLoad = () => {
-  self.importScripts("/js/opencv-4.0.1.js");
+  self.importScripts("/js/opencv-4.6.0.js");
 
   waitForOpenCv((err) => {
     if (err) {
@@ -353,7 +353,7 @@ const processScreenshot = (imageData: ImageData) => {
       fontHeight: seqFontHeight,
       gridHeight: Math.floor(uiHeight * 0.066),
     });
-    image.delete()
+    image.delete();
 
     const outputs = new cv.MatVector();
     outputs.push_back(threshold);
