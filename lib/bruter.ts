@@ -73,7 +73,7 @@ export default function runSolver(
     useSequencePriorityOrder?: boolean;
   }
 ): SolverResult | null {
-  const roots = optimizeSequences(sequences);
+  const roots = optimizeSequences(sequences, bufferSize);
   const values: OptimizedSequence[] = [
     // add original sequences individually since sequence optimizer
     // only returns combinations
@@ -84,10 +84,7 @@ export default function runSolver(
     ...getRootsAllValues(roots),
   ];
 
-  const seqsThatFitInBuffer = values.filter(
-    (r) => r.result.length <= bufferSize
-  );
-  const dedupedSeqs = removeDuplicates(seqsThatFitInBuffer);
+  const dedupedSeqs = removeDuplicates(values);
 
   const solver = useSequencePriorityOrder
     ? runSolverPrioritized
@@ -180,9 +177,6 @@ function runSolverUnprioritized(
         const solutions = brute(pattern, matrix, true);
         return solutions.map((solution) => ({ match, solution }));
       })
-      // it's possible that a sequence was found which includes skips
-      // filter out solutions that are longer than the buffer size!
-      .filter((seq) => seq.solution.length <= bufferSize)
       .map((s) => ({ ...s, routeWeight: calculateRouteWeight(s.solution) }))
       .sort(({ routeWeight: a }, { routeWeight: b }) => {
         const aScore =
