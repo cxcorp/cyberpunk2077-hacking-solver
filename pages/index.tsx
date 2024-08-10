@@ -98,22 +98,88 @@ interface IndexProps {
   setModalVisible: (visible: boolean) => void;
 }
 
-const Index = ({
-  codeMatrix,
-  allSequencesLen,
-  solution,
-  modalVisible,
-  setModalVisible,
-}: IndexProps) => {
-  const {
-    matrixText,
-    onMatrixChanged,
-    sequencesText,
-    onSequencesChanged,
-    solverRunning,
-    onRunSolver,
-  } = useAppContext();
+const areWorkersLoaded = (
+  workersLoadingPromiseRef: React.MutableRefObject<Promise<void>>,
+  cvWorkerRef: React.MutableRefObject<CvService.CvWorker>,
+  ocrWorkerRef: React.MutableRefObject<Tesseract.Worker>
+) => {
+  return (
+    cvWorkerRef.current &&
+    ocrWorkerRef.current &&
+    !workersLoadingPromiseRef.current
+  );
+};
 
+const loadWorkers = async (
+  cvWorkerRef: React.MutableRefObject<CvService.CvWorker>,
+  ocrWorkerRef: React.MutableRefObject<Tesseract.Worker>,
+  setOcrStatus: React.Dispatch<
+    React.SetStateAction<{
+      progress: number;
+      text: string;
+    }>
+  >
+) => {
+  const uniqChars = (arr) => [...new Set(arr.join("").split(""))];
+  const getOcrWhitelist = () =>
+    [" ", ...uniqChars(["1C", "55", "7A", "BD", "E9", "FF"])].join("");
+
+  const cv = await CvService.createWorker();
+  cv.worker.addEventListener("message", (e) => console.log("onmessage", e));
+  cv.worker.addEventListener("error", (e) => console.error("onerror", e));
+  await cv.load();
+  console.log("CV worker loaded ");
+  cvWorkerRef.current = cv;
+
+  const ocrWorker = createWorker({
+    langPath: "/ocr",
+    gzip: true,
+    logger: (msg) => {
+      console.log("[tesseract] ", msg);
+      if (msg?.userJobId?.startsWith("code_matrix-")) {
+        const matrixProgress = msg.progress;
+        // 50->80
+        const progress = 50 + (80 - 50) * matrixProgress;
+        console.log("codematrix", progress);
+        setOcrStatus({
+          progress,
+          text: "Reading code matrix...",
+        });
+      } else if (msg?.userJobId?.startsWith("sequences-")) {
+        const sequenceProgress = msg.progress;
+        // 80->99
+        const progress = 80 + (99 - 80) * sequenceProgress;
+        console.log("sequence", progress);
+        setOcrStatus({
+          progress,
+          text: "Reading sequences...",
+        });
+      }
+    },
+    errorHandler: (err) => {
+      console.error("[tesseract] ", err);
+    },
+  });
+
+  console.log("loading worker");
+  await ocrWorker.load();
+  console.log("loading OCR language data");
+  await ocrWorker.loadLanguage("eng");
+  console.log("initializing OCR language data");
+  await ocrWorker.initialize("eng");
+  await ocrWorker.setParameters({
+    tessedit_char_whitelist: getOcrWhitelist(),
+    // @ts-ignore
+    tessedit_pageseg_mode: PSM.SINGLE_BLOCK, // if block doesn't work well enough, slice grids into columns
+  });
+  ocrWorkerRef.current = ocrWorker;
+  console.log("OCR worker loaded");
+};
+
+const useCv = (setModalVisible: (visible: boolean) => void) => {
+  const { onMatrixChanged, onSequencesChanged, onRunSolver } = useAppContext();
+
+  const workersLoadingPromise = useRef<Promise<void>>(null);
   const cvWorkerRef = useRef<CvService.CvWorker>(null);
   const ocrWorkerRef = useRef<Tesseract.Worker>(null);
 
@@ -121,67 +187,6 @@ const Index = ({
     progress: number;
     text: string;
   }>();
-
-  useEffect(() => {
-    const uniqChars = (arr) => [...new Set(arr.join("").split(""))];
-    const getOcrWhitelist = () =>
-      [" ", ...uniqChars(["1C", "55", "7A", "BD", "E9", "FF"])].join("");
-
-    async function makeWorkers() {
-      const cv = await CvService.createWorker();
-      cv.worker.addEventListener("message", (e) => console.log("onmessage", e));
-      cv.worker.addEventListener("error", (e) => console.error("onerror", e));
-      await cv.load();
-      console.log("CV worker loaded ");
-      cvWorkerRef.current = cv;
-
-      const ocrWorker = createWorker({
-        langPath: "/ocr",
-        gzip: true,
-        logger: (msg) => {
-          console.log("[tesseract] ", msg);
-          if (msg?.userJobId?.startsWith("code_matrix-")) {
-            const matrixProgress = msg.progress;
-            // 50->80
-            const progress = 50 + (80 - 50) * matrixProgress;
-            console.log("codematrix", progress);
-            setOcrStatus({
-              progress,
-              text: "Reading code matrix...",
-            });
-          } else if (msg?.userJobId?.startsWith("sequences-")) {
-            const sequenceProgress = msg.progress;
-            // 80->99
-            const progress = 80 + (99 - 80) * sequenceProgress;
-            console.log("sequence", progress);
-            setOcrStatus({
-              progress,
-              text: "Reading sequences...",
-            });
-          }
-        },
-        errorHandler: (err) => {
-          console.error("[tesseract] ", err);
-        },
-      });
-
-      console.log("loading worker");
-      await ocrWorker.load();
-      console.log("loading OCR language data");
-      await ocrWorker.loadLanguage("eng");
-      console.log("initializing OCR language data");
-      await ocrWorker.initialize("eng");
-      await ocrWorker.setParameters({
-        tessedit_char_whitelist: getOcrWhitelist(),
-        // @ts-ignore
-        tessedit_pageseg_mode: PSM.SINGLE_BLOCK, // if block doesn't work well enough, slice grids into columns
-      });
-      ocrWorkerRef.current = ocrWorker;
-      console.log("OCR worker loaded");
-    }
-
-    makeWorkers();
-  }, []);
 
   const outputCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -286,10 +291,6 @@ const Index = ({
           type: item.type,
         });
 
-        if (!ocrWorkerRef.current) {
-          throw new Error("[debug] wait for ocr worker");
-        }
-
         console.log("reading clipboard file");
         setOcrStatus({
           text: "Reading image...",
@@ -298,6 +299,15 @@ const Index = ({
         const file = item.getAsFile();
         console.log("getting file image data");
         const imageData = await getFileImageData(file);
+
+        if (
+          !areWorkersLoaded(workersLoadingPromise, cvWorkerRef, ocrWorkerRef)
+        ) {
+          const promise = loadWorkers(cvWorkerRef, ocrWorkerRef, setOcrStatus);
+          workersLoadingPromise.current = promise;
+          await promise;
+        }
+
         setTimeout(() => processImage(imageData), 0);
         onMatrixChanged("");
         onSequencesChanged("");
@@ -314,6 +324,30 @@ const Index = ({
       window.removeEventListener("paste", handlePaste);
     };
   }, []);
+
+  return {
+    ocrStatus,
+    outputCanvasRef,
+  };
+};
+
+const Index = ({
+  codeMatrix,
+  allSequencesLen,
+  solution,
+  modalVisible,
+  setModalVisible,
+}: IndexProps) => {
+  const {
+    matrixText,
+    onMatrixChanged,
+    sequencesText,
+    onSequencesChanged,
+    solverRunning,
+    onRunSolver,
+  } = useAppContext();
+
+  const { ocrStatus, outputCanvasRef } = useCv(setModalVisible);
 
   const inputsEmpty = useMemo(
     () => sequencesText.trim().length === 0 || matrixText.trim().length === 0,
