@@ -351,7 +351,7 @@ const processScreenshot = (imageData: ImageData) => {
         [3, 4, 5]
       ),
       fontHeight: seqFontHeight,
-      gridHeight: Math.floor(uiHeight * 0.066),
+      gridHeight: Math.floor(uiHeight * 0.055),
     });
     image.delete();
 
