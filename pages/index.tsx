@@ -25,7 +25,6 @@ import SolutionModal from "../components/SolutionModal";
 import Button from "../components/Button";
 
 import { parseMatrix } from "../util";
-import { sendPrioritizationStats, sendSolverStats } from "../lib/stats";
 import { SolverResult } from "../lib/bruter";
 import * as CvService from "../services/cv";
 import styles from "../styles/Index.module.scss";
@@ -554,21 +553,6 @@ class IndexContainer extends React.Component<{}, IndexContainerState> {
           sequencesText,
           unprioritizedSequencesText,
         });
-
-        if (useSequencePriorityOrder) {
-          sendPrioritizationStats(() => ({
-            originalSequenceText: unprioritizedSequencesText,
-            prioritizedSequenceText: sequencesText,
-          }));
-        }
-
-        sendSolverStats(() => ({
-          bufferSize: bufferSize,
-          matrixSize: matrix[0].length,
-          sequenceCount: sequences.length,
-          sequencesMatched: (solution && solution.match.includes.length) || 0,
-          solutionLength: (solution && solution.match.result.length) || 0,
-        }));
 
         this.setState({
           solution,

@@ -28,25 +28,7 @@ function Copyright({ className }: { className?: string }) {
   return <p className={className}>cxcorp | 2020</p>;
 }
 
-const usePageView = () => {
-  useEffect(() => {
-    if (process.env.UA_ENABLED !== "true") {
-      return;
-    }
-
-    fetch(`/api/pageview`, {
-      method: "POST",
-      body: JSON.stringify({ dp: window.location.pathname }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).catch(() => {});
-  }, []);
-};
-
 const Layout: FC = ({ children }) => {
-  usePageView();
-
   return (
     <>
       <div className={styles.backdrop} />
