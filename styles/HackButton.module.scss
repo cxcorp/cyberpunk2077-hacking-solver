@@ -1,0 +1,121 @@
+.hack-button {
+  &__button {
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__button::after {
+    display: none;
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    content: "> > >";
+    clip-path: inset(0 100% 0 0);
+    animation: none;
+  }
+
+  &__button:not(:disabled):hover::after {
+    display: inline;
+    clip-path: inset(0 100% 0 0);
+    animation: button-arrows;
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
+    animation-direction: normal;
+    animation-iteration-count: infinite;
+  }
+
+  &__button:not(:disabled):hover::before {
+    opacity: 1;
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-duration: 3s;
+    animation-timing-function: ease-in-out;
+    animation-name: button-swishy-swoshy;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+  }
+
+  &__button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+    bottom: -50%;
+    filter: blur(10px);
+
+    transition: opacity 200ms cubic-bezier(0.4, 0, 1, 1);
+    opacity: 0.2;
+
+    animation: none;
+    box-shadow: inset 0 0 30px rgba(22, 90, 13, 0.5),
+      inset 0 0 6px rgba(22, 90, 13, 0.7),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.7);
+  }
+}
+
+@keyframes button-arrows {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  24% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  25% {
+    clip-path: inset(0 66% 0 0);
+  }
+
+  49% {
+    clip-path: inset(0 66% 0 0);
+  }
+
+  50% {
+    clip-path: inset(0 33% 0 0);
+  }
+
+  74% {
+    clip-path: inset(0 33% 0 0);
+  }
+
+  75% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes button-swishy-swoshy {
+  0% {
+    transform: translate(0, 0) rotate(0);
+    box-shadow: inset 0 0 30px rgba(22, 90, 13, 0.5),
+      inset 0 0 6px rgba(22, 90, 13, 0.7),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.7);
+  }
+
+  20% {
+    transform: translate(0, -30px);
+    box-shadow: inset -30px 5px 30px rgba(22, 90, 13, 0.5),
+      inset 10px -5px 6px rgba(22, 90, 13, 0.7),
+      inset 10px 20px 30px rgba(208, 237, 87, 0.7);
+  }
+
+  50% {
+    transform: rotate(10deg);
+    box-shadow: inset 0 5px 30px rgba(22, 90, 13, 0.5),
+      inset 0 -5px 6px rgba(22, 90, 13, 0.7),
+      inset 0 -20px 30px rgba(208, 237, 87, 0.7);
+  }
+
+  100% {
+    transform: translate(0, 30px) rotate(-5deg);
+    box-shadow: inset 10px 5px 30px rgba(22, 90, 13, 0.5),
+      inset -10px -5px 6px rgba(22, 90, 13, 0.7),
+      inset 10px 20px 30px rgba(208, 237, 87, 0.7);
+  }
+}
