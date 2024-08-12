@@ -13,12 +13,12 @@
     "lint": "tslint --project ."
   },
   "dependencies": {
-    "bootstrap": "^4.6.2",
+    "bootstrap": "^5.3.3",
     "classnames": "^2.3.2",
     "lodash": "^4.17.21",
     "next": "^12.3.1",
     "react": "^17.0.2",
-    "react-bootstrap": "^1.6.6",
+    "react-bootstrap": "^2.10.4",
     "react-dom": "^17.0.2",
     "react-sortable-hoc": "^2.0.0",
     "tesseract.js": "^3.0.3"

@@ -38,7 +38,7 @@
     font-size: 1.5rem;
     display: flex;
     align-items: center;
-    padding: 0 0 0 5rem;
+    padding: 0 0 0 2rem;
     height: 42px;
     background: $color-highlight;
     color: $color-bg;
@@ -47,6 +47,7 @@
 
   &__sequence {
     position: absolute;
+    display: none;
     left: 0;
     font-weight: 600;
     font-size: 2rem;
@@ -55,7 +56,6 @@
     height: 4rem;
     transform: translateX(-50%);
     box-sizing: border-box;
-    display: flex;
     align-items: center;
     justify-content: center;
     margin: 0;
@@ -82,12 +82,12 @@
       inset 0 -20px 30px rgba(208, 237, 87, 0.7);
   }
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-up(xs) {
     &__sequence {
-      display: none;
+      display: flex;
     }
     &__header {
-      padding-left: 2rem;
+      padding-left: 5rem;
     }
   }
 
@@ -130,6 +130,7 @@
   }
 
   &__sequence {
+    display: none;
     position: absolute;
     left: 0;
     font-weight: 600;
@@ -139,7 +140,6 @@
     height: 4rem;
     transform: translateX(-50%);
     box-sizing: border-box;
-    display: flex;
     align-items: center;
     justify-content: center;
     margin: 0;
@@ -150,6 +150,12 @@
     background: #151017;
     box-shadow: 0 0 30px rgba(22, 90, 13, 0.3), 0 0 6px rgba(22, 90, 13, 0.5);
     text-shadow: 0 0 10px rgba(208, 237, 87, 0.5);
+  }
+
+  @include media-breakpoint-up(xs) {
+    &__sequence {
+      display: flex;
+    }
   }
 
   &__sequence::before {
@@ -177,12 +183,6 @@
       right: 0;
       left: initial;
       transform: translateX(50%);
-    }
-  }
-
-  @include media-breakpoint-down(xs) {
-    &__sequence {
-      display: none;
     }
   }
 
