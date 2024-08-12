@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { createWorker, PSM } from "tesseract.js";
 import { useAppContext } from "../components/AppContext";
 import * as CvService from "../services/cv";
 
@@ -35,6 +34,8 @@ const loadWorkers = async (
   await cv.load();
   console.log("CV worker loaded ");
   cvWorkerRef.current = cv;
+
+  const { createWorker, PSM } = await import("tesseract.js");
 
   const ocrWorker = createWorker({
     langPath: "/ocr",
