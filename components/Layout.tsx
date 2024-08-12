@@ -25,7 +25,7 @@ function GitHubLink() {
 }
 
 function Copyright({ className }: { className?: string }) {
-  return <p className={className}>cxcorp | 2020</p>;
+  return <p className={className}>cxcorp | 2020-{new Date().getFullYear()}</p>;
 }
 
 const Layout: FC = ({ children }) => {
