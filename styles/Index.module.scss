@@ -206,3 +206,7 @@
     color: color.adjust(#5ee9f2, $alpha: -0.3);
   }
 }
+
+.ocr-output-container {
+  display: none;
+}

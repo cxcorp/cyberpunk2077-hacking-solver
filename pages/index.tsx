@@ -89,7 +89,8 @@ const Index = ({
     onRunSolver,
   } = useAppContext();
 
-  const { ocrStatus, outputCanvasRef } = useCv(setModalVisible);
+  const { ocrStatus, ocrOutputCanvasRef, ocrOutputCanvasContainerRef } =
+    useCv(setModalVisible);
 
   const inputsEmpty = useMemo(
     () => sequencesText.trim().length === 0 || matrixText.trim().length === 0,
@@ -159,9 +160,12 @@ const Index = ({
         )}
 
         <form onSubmit={handleHackButtonClick}>
-          <Row>
+          <Row
+            ref={ocrOutputCanvasContainerRef}
+            className={styles["ocr-output-container"]}
+          >
             <Col>
-              <canvas ref={outputCanvasRef} />
+              <canvas ref={ocrOutputCanvasRef} />
             </Col>
           </Row>
 

@@ -95,6 +95,7 @@ const useCv = (setModalVisible: (visible: boolean) => void) => {
   }>();
 
   const outputCanvasRef = useRef<HTMLCanvasElement>(null);
+  const outputCanvasContainerRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
     const getFileImageData = (file: File) => {
@@ -148,6 +149,9 @@ const useCv = (setModalVisible: (visible: boolean) => void) => {
       });
       console.log("running OCR");
       console.log("OCRing code matrix");
+      if (outputCanvasContainerRef.current) {
+        outputCanvasContainerRef.current.style.display = "block";
+      }
       putImage(output.codeMatrix);
       const codeMatrix = await ocrWorkerRef.current.recognize(
         outputCanvasRef.current,
@@ -233,7 +237,8 @@ const useCv = (setModalVisible: (visible: boolean) => void) => {
 
   return {
     ocrStatus,
-    outputCanvasRef,
+    ocrOutputCanvasRef: outputCanvasRef,
+    ocrOutputCanvasContainerRef: outputCanvasContainerRef,
   };
 };
 
