@@ -13,21 +13,6 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-
-          {/* SimpleAnalytics */}
-          <script
-            async
-            defer
-            data-collect-dnt="true"
-            src="https://sa.cyberpunk-hacker.com/latest.js"
-          ></script>
-          <noscript>
-            <img
-              src="https://sa.cyberpunk-hacker.com/noscript.gif?collect-dnt=true"
-              alt=""
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </noscript>
         </body>
       </Html>
     );

@@ -21,30 +21,12 @@ const PrivacyPage = () => (
             <MainTitle className={styles.title} />
             <h2 className={styles.header}>Privacy Policy</h2>
             <div className={styles.content}>
-              <p>
-                This website gathers anonymous metrics to understand where our
-                traffic comes from, which pages are visited, and what kind of
-                devices visit the site (e.g. screen size, whether the device is
-                a mobile or desktop device). These metrics are used to create a
-                better experience for visitors.
-              </p>
-              <p>
-                This website does not track you, serve personalized advertising,
-                or sell the data to anyone. The metrics on this website are
-                powered by{" "}
-                <a href="https://www.simpleanalytics.com/">Simple Analytics</a>,
-                a privacy-friendly web analytics provider. You can learn more
-                about the types of metrics collected{" "}
-                <a href="https://docs.simpleanalytics.com/data-collection">
-                  here
-                </a>
-                .
-              </p>
+              <p>This website doesn't track you.</p>
               <p>
                 Any possible changes to the site's privacy policy will be
                 updated on this page.
               </p>
-              <p>Last updated: 2024-08-12</p>
+              <p>Last updated: 2026-06-07</p>
 
               <hr />
               <p>
