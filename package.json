@@ -13,15 +13,15 @@
     "lint": "tslint --project ."
   },
   "dependencies": {
-    "bootstrap": "^5.3.3",
-    "classnames": "^2.3.2",
-    "lodash": "^4.17.21",
+    "bootstrap": "5.3.8",
+    "classnames": "2.5.1",
+    "lodash": "4.18.1",
     "next": "^12.3.1",
     "react": "^17.0.2",
-    "react-bootstrap": "^2.10.4",
+    "react-bootstrap": "2.10.10",
     "react-dom": "^17.0.2",
-    "react-sortable-hoc": "^2.0.0",
-    "tesseract.js": "^3.0.3"
+    "react-sortable-hoc": "2.0.0",
+    "tesseract.js": "3.0.3"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^12.3.1",
