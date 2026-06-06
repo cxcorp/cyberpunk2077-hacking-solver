@@ -75,7 +75,7 @@ const loadWorkers = async (
   await ocrWorker.initialize("eng");
   await ocrWorker.setParameters({
     tessedit_char_whitelist: getOcrWhitelist(),
-    // @ts-ignore
+    // @ts-expect-error tesseract.js types don't include this parameter
     tessedit_pageseg_mode: PSM.SINGLE_BLOCK, // if block doesn't work well enough, slice grids into columns
   });
   ocrWorkerRef.current = ocrWorker;
@@ -95,7 +95,7 @@ const useCv = (setModalVisible: (visible: boolean) => void) => {
   }>();
 
   const outputCanvasRef = useRef<HTMLCanvasElement>(null);
-  const outputCanvasContainerRef = useRef<HTMLDivElement>();
+  const outputCanvasContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getFileImageData = (file: File) => {

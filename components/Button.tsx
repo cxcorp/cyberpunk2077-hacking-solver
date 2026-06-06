@@ -3,11 +3,10 @@ import cz from "classnames";
 
 import styles from "../styles/Button.module.scss";
 
-interface ButtonProps
-  extends React.DetailedHTMLProps<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > {}
+type ButtonProps = React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>;
 
 const Button = (props: ButtonProps) => {
   const { className, ...restProps } = props;

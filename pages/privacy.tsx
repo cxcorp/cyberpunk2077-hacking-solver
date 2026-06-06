@@ -21,17 +21,17 @@ const PrivacyPage = () => (
             <MainTitle className={styles.title} />
             <h2 className={styles.header}>Privacy Policy</h2>
             <div className={styles.content}>
-              <p>This website doesn't track you.</p>
+              <p>This website doesn&apos;t track you.</p>
               <p>
-                Any possible changes to the site's privacy policy will be
+                Any possible changes to the site&apos;s privacy policy will be
                 updated on this page.
               </p>
               <p>Last updated: 2026-06-07</p>
 
               <hr />
               <p>
-                <Link href="/">
-                  <a className={styles.backlink}>{"< "}Back</a>
+                <Link href="/" className={styles.backlink}>
+                  {"< "}Back
                 </Link>
               </p>
             </div>

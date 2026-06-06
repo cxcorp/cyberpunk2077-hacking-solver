@@ -28,7 +28,7 @@ const autocomplete = (key: string) => {
 
 export default function FilteredTextArea(props: FilteredTextAreaProps) {
   const { validate, onChange, ...textAreaProps } = props;
-  const textAreaEl = useRef<HTMLTextAreaElement>();
+  const textAreaEl = useRef<HTMLTextAreaElement>(null);
 
   const _handleChange = useCallback(
     (newValue: string) => {

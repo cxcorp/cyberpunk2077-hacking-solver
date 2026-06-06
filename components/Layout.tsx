@@ -1,12 +1,12 @@
-import { FC } from "react";
+import { PropsWithChildren } from "react";
 import Link from "next/link";
 import { Container, Row, Col } from "react-bootstrap";
 import styles from "../styles/Layout.module.scss";
 
 function PrivacyLink() {
   return (
-    <Link href="/privacy">
-      <a className={styles["privacy-link"]}>Privacy</a>
+    <Link href="/privacy" className={styles["privacy-link"]}>
+      Privacy
     </Link>
   );
 }
@@ -28,7 +28,7 @@ function Copyright({ className }: { className?: string }) {
   return <p className={className}>cxcorp | 2020-{new Date().getFullYear()}</p>;
 }
 
-const Layout: FC = ({ children }) => {
+const Layout = ({ children }: PropsWithChildren<unknown>) => {
   return (
     <>
       <div className={styles.backdrop} />

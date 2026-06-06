@@ -112,6 +112,8 @@ const Index = ({
 
   const [hasJS, setHasJS] = useState(false);
   useEffect(() => {
+    // Intentional: flip to the client-rendered variant once JS has hydrated.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHasJS(true);
   }, []);
 
@@ -212,7 +214,7 @@ const Index = ({
           <Col lg={8}>
             <p>
               THIS APP IS NOT AFFILIATED WITH CD PROJEKT RED OR CYBERPUNK 2077.
-              TRADEMARK "CYBERPUNK 2077" IS OWNED BY CD PROJEKT{" "}
+              TRADEMARK &quot;CYBERPUNK 2077&quot; IS OWNED BY CD PROJEKT{" "}
               <span
                 onClick={() => {
                   onSequencesChanged(`BD E9 1C
@@ -249,7 +251,10 @@ interface IndexContainerState {
   unprioritizedSequencesText: string;
 }
 
-class IndexContainer extends React.Component<{}, IndexContainerState> {
+class IndexContainer extends React.Component<
+  Record<string, never>,
+  IndexContainerState
+> {
   state = {
     matrixText: "",
     sequencesText: "",

@@ -22,26 +22,21 @@ export class CvWorker {
       codeMatrix: ImageData;
       sequences: ImageData;
     }>((resolve, reject) => {
-      const self = this;
-
-      const removeLoadResponseHandler = () =>
-        self.worker.removeEventListener("message", catchResponse);
-
-      function catchResponse(e: MessageEvent) {
+      const catchResponse = (e: MessageEvent) => {
         const action = e.data.action as WorkerResultAction;
         const payload = e.data.payload;
 
         if (action === "process_screenshot_success") {
-          removeLoadResponseHandler();
+          this.worker.removeEventListener("message", catchResponse);
           resolve(payload);
         } else if (action === "process_screenshot_error") {
-          removeLoadResponseHandler();
+          this.worker.removeEventListener("message", catchResponse);
           reject(payload);
         }
-      }
+      };
 
-      self.worker.addEventListener("message", catchResponse);
-      self.postAction("process_screenshot", imageData);
+      this.worker.addEventListener("message", catchResponse);
+      this.postAction("process_screenshot", imageData);
     });
   };
 
@@ -53,37 +48,25 @@ export class CvWorker {
 
     console.log("starting");
     return new Promise<void>((resolve, reject) => {
-      const self = this;
-
-      const removeLoadResponseHandler = () =>
-        self.worker.removeEventListener("message", catchLoadResponse);
-
-      function catchLoadResponse(e: MessageEvent<any>) {
+      const catchLoadResponse = (e: MessageEvent<any>) => {
         const { action, payload } = e.data;
         console.log("catchLoadResponse", e);
 
         if (action === "load_success") {
-          self.loaded = true;
-          removeLoadResponseHandler();
+          this.loaded = true;
+          this.worker.removeEventListener("message", catchLoadResponse);
           resolve();
         } else if (action === "load_error") {
-          removeLoadResponseHandler();
+          this.worker.removeEventListener("message", catchLoadResponse);
           reject(payload);
         }
-      }
+      };
 
-      self.worker.addEventListener("message", catchLoadResponse);
-      self.postAction("load");
+      this.worker.addEventListener("message", catchLoadResponse);
+      this.postAction("load");
     });
   };
 }
 
-interface WWorker extends Worker {
-  new (): WWorker;
-}
-
-export const createWorker = async (): Promise<CvWorker> => {
-  const Worker = (await import("./cv.worker")).default as WWorker;
-  console.log(Worker);
-  return new CvWorker(new Worker());
-};
+export const createWorker = async (): Promise<CvWorker> =>
+  new CvWorker(new Worker(new URL("./cv.worker.ts", import.meta.url)));

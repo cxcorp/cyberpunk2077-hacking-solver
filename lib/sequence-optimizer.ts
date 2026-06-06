@@ -70,7 +70,7 @@ function match2(
   target: number[],
   includes: number[][]
 ): MatchResult[] {
-  let output: { shift: number; dir: ShiftDir }[] = [];
+  const output: { shift: number; dir: ShiftDir }[] = [];
 
   for (let shiftRight = 0; shiftRight < target.length; shiftRight++) {
     if (doesMatchRight(shiftRight, candidate, target)) {

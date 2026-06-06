@@ -126,7 +126,7 @@ function runSolverPrioritized(
   // Try to find a solution for all original sequences, removing the last
   // sequence until a match is found.
 
-  let requiredSequences = [...originalSequences];
+  const requiredSequences = [...originalSequences];
   while (requiredSequences.length > 0) {
     const matches = optimalSequences.filter((optimalSeq) =>
       containsAllSequences(optimalSeq.includes, requiredSequences)

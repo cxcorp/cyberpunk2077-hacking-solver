@@ -1,5 +1,5 @@
 import React, {
-  FC,
+  PropsWithChildren,
   useCallback,
   useContext,
   useRef,
@@ -9,7 +9,26 @@ import React, {
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import debounce from "lodash/debounce";
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  restrictToVerticalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 import cz from "classnames";
 
 import { useAppContext } from "../components/AppContext";
@@ -25,11 +44,14 @@ const SolutionContext = React.createContext<SolutionContextType>({
   result: null,
 });
 
-const Sb: FC<{ className?: string }> = ({ children, className }) => {
+const Sb = ({
+  children,
+  className,
+}: PropsWithChildren<{ className?: string }>) => {
   return <span className={cz(styles.semibold, className)}>{children}</span>;
 };
 
-const Code: FC = ({ children }) => (
+const Code = ({ children }: PropsWithChildren<unknown>) => (
   <span className={styles.code}>{children}</span>
 );
 
@@ -165,8 +187,8 @@ const renderSolution = (
 };
 
 const SolutionRenderer = ({ codeMatrix, solution }: SolutionRendererProps) => {
-  const parentRef = useRef<HTMLDivElement>();
-  const canvasRef = useRef<HTMLCanvasElement>();
+  const parentRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     console.log("rendering solution");
@@ -201,21 +223,55 @@ interface BodyProps {
   codeMatrix: number[][];
 }
 
-const DragHandle = () => (
-  <GridVerticalIcon className={styles["sortable-item__draghandle"]} />
-);
+interface SortableSequenceItemProps {
+  id: string;
+  displayIndex: number;
+  value: string;
+}
 
-const SortableSequenceItem = SortableElement(({ displayIndex, value }) => {
+const SortableSequenceItem = ({
+  id,
+  displayIndex,
+  value,
+}: SortableSequenceItemProps) => {
   const { result } = useContext(SolutionContext);
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
   const isMatched =
     result &&
     result.match.includes.some(
       (arr) => arr.map((n) => n.toString(16).toUpperCase()).join(" ") === value
     );
 
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
-    <li className={styles["sortable-item"]}>
-      <DragHandle />
+    <li
+      ref={setNodeRef}
+      style={style}
+      className={cz(styles["sortable-item"], {
+        [styles["sortable-item__dragged"]]: isDragging,
+      })}
+    >
+      <span
+        ref={setActivatorNodeRef}
+        style={{ display: "inline-flex", cursor: "grab", touchAction: "none" }}
+        {...attributes}
+        {...listeners}
+      >
+        <GridVerticalIcon className={styles["sortable-item__draghandle"]} />
+      </span>
       <Sb className="mr-2">{displayIndex + 1}.</Sb> {value}
       {isMatched && (
         <span className={styles["sortable-item__success-indicator"]}>
@@ -224,22 +280,64 @@ const SortableSequenceItem = SortableElement(({ displayIndex, value }) => {
       )}
     </li>
   );
-});
+};
 
-const SortableSequenceList = SortableContainer(({ items }) => {
-  return (
-    <ul className={styles["sortable-list"]}>
-      {items.map((value, index) => (
-        <SortableSequenceItem
-          key={`${value}-${index}`}
-          index={index}
-          displayIndex={index}
-          value={value}
-        />
-      ))}
-    </ul>
+interface SortableSequenceListProps {
+  items: string[];
+  onSortEnd: (indices: { oldIndex: number; newIndex: number }) => void;
+}
+
+const SortableSequenceList = ({
+  items,
+  onSortEnd,
+}: SortableSequenceListProps) => {
+  const ids = useMemo(
+    () => items.map((value, index) => `${value}-${index}`),
+    [items]
   );
-});
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) {
+      return;
+    }
+    const oldIndex = ids.indexOf(active.id as string);
+    const newIndex = ids.indexOf(over.id as string);
+    if (oldIndex === -1 || newIndex === -1) {
+      return;
+    }
+    onSortEnd({ oldIndex, newIndex });
+  };
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+        <ul className={styles["sortable-list"]}>
+          {items.map((value, index) => (
+            <SortableSequenceItem
+              key={ids[index]}
+              id={ids[index]}
+              displayIndex={index}
+              value={value}
+            />
+          ))}
+        </ul>
+      </SortableContext>
+    </DndContext>
+  );
+};
 
 const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
   const { sequencesText, onSequencesChanged, onRunSolver } = useAppContext();
@@ -253,7 +351,7 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
   );
 
   const handleSortEnd = useCallback(
-    ({ oldIndex, newIndex }) => {
+    ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
       const newText = arrayMove(sequenceItems, oldIndex, newIndex).join("\n");
       onSequencesChanged(newText, () => {
         onRunSolver(true);
@@ -272,12 +370,6 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
           <Sb>Change sequence priority by dragging:</Sb>
         </p>
         <SortableSequenceList
-          axis="y"
-          lockAxis="y"
-          helperClass={cz(
-            styles["sortable-item"],
-            styles["sortable-item__dragged"]
-          )}
           items={sequenceItems}
           onSortEnd={handleSortEnd}
         />
@@ -302,12 +394,6 @@ const Body = ({ result, allSequencesLen, codeMatrix }: BodyProps) => {
           <Sb>Change sequence priority by dragging:</Sb>
         </p>
         <SortableSequenceList
-          axis="y"
-          lockAxis="y"
-          helperClass={cz(
-            styles["sortable-item"],
-            styles["sortable-item__dragged"]
-          )}
           items={sequenceItems}
           onSortEnd={handleSortEnd}
         />
