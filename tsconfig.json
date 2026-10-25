@@ -12,6 +12,7 @@
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    "rootDir": ".",
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
